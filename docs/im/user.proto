@@ -1,0 +1,113 @@
+syntax = "proto3";
+
+import "validate/validate.proto";
+import "google/protobuf/wrappers.proto";
+
+// 上行数据
+message Input {
+    string version = 1; //版本
+    PackageType type = 2; // 包的类型
+    int64 request_id = 3 [(validate.rules).int64 = {gt: 0}]; // 请求id
+    bytes data = 4; // 数据
+}
+//包类型枚举
+enum  PackageType {
+    PT_UNKNOWN = 0; // 未知
+    PT_SIGN_IN = 1; // 设备登录请求
+    PT_SYNC = 2; // 消息同步触发
+    PT_HEARTBEAT = 3; // 心跳
+    PT_SEND_MESSAGE = 4; // 发送消息(类)
+    PT_NOTIFY = 5;//通知
+    PT_GROUP = 6; //群组操作
+    PT_USER = 7;//好友操作
+    PT_ROOM = 8;//房间操作
+    PT_CHANNEL = 9;//频道操作
+    PT_MINE = 10;//我的操作
+    PT_SEARCH = 11;//搜索操作(好友,群组...)
+}
+//个人操作(上行data数据)
+message UserHandle{
+    UserHandleType type = 1;//操作类型
+    bytes data = 2;//数据
+}
+//用户操作类型枚举
+enum UserHandleType{
+    UNKNOWN_USER_HANDLE = 0;//未知
+    UPDATE_USER = 1;//修改个人信息
+    SEARCH_USER = 2;//查看个人信息
+    DELETE_USER = 3;//注销个人帐号
+}
+//修改个人信息请求参数(上行个人操作data数据)
+message UserUpdateReq{
+    google.protobuf.StringValue name = 1 [(validate.rules).string.min_len = 2];//姓名
+    google.protobuf.StringValue id_card = 2 [(validate.rules).string.len = 18];//身份证号码
+    google.protobuf.StringValue password = 3 [(validate.rules).string.min_len = 8];//密码
+    google.protobuf.StringValue phone = 4 [(validate.rules).string.len = 11];//电话号码
+    google.protobuf.StringValue nickname = 5 [(validate.rules).string.min_len = 1];//昵称
+    google.protobuf.Int32Value sex = 6 [(validate.rules).int32 = {in: [1, 2, 3]}];//性别
+    google.protobuf.StringValue avatar_url = 7 [(validate.rules).string.uri = true];//头像地址
+    google.protobuf.StringValue introduce = 8;//个人介绍
+    google.protobuf.BoolValue snap_call = 9;//是否开启临时会话
+    google.protobuf.Int32Value add_friend_type = 10 [(validate.rules).int32 = {in:[1, 2, 3, 4]}];//添加好友方式
+    google.protobuf.StringValue friend_pass_problem = 11 [(validate.rules).string.min_len = 1];//通过问题通过好友验证问题
+    google.protobuf.StringValue friend_pass_answer = 12 [(validate.rules).string.min_len = 1];//通过问题通过好友验证答案
+}
+//性别枚举
+enum Sex{
+    UNKNOWN_SEX = 0;//未知
+    SECRET = 1;//保密
+    BOY = 2;//男
+    GIRL = 3;//女
+}
+//添加好友方式枚举
+enum AddFriendType{
+    UNKNOWN_TYPE = 0;//未知
+    PASS = 1;//直接通过
+    VERIFY = 2;//验证通过
+    PROBLEM = 3;//问题通过
+    REFUSE = 4;//拒绝添加
+}
+//好友操作(上行data数据)
+message FriendHandle{
+    FriendHandleType type = 1;//操作类型
+    bytes data = 2;//数据
+}
+//好友操作类型枚举
+enum FriendHandleType{
+    UNKNOWN_FRIEND_TYPE = 0;//未知
+    CREATE_FRIEND = 1;//添加好友
+    UPDATE_FRIEND = 2;//修改好友信息
+    SEARCH_FRIEND = 3;//查找好友信息
+    DELETE_FRIEND = 4;//删除好友
+    BLACK_FRIEND = 5;//拉黑好友
+    LIST_FRIEND = 6;//好友列表
+    PASS_FRIEND = 7;//通过好友请求
+    REFUSE_FRIEND = 8;//拒绝好友请求
+}
+//添加好友请求参数
+message CreateFriendReq{}
+//修改好友信息请求参数
+message UpdateFriendReq{}
+//查找好友信息请求参数
+message SearchFriendReq{}
+//删除好友请求参数
+message DeleteFriendReq{}
+//拉黑好友请求参数
+message BlackFriendReq{}
+//通过好友请求
+
+
+
+
+/*--------------------------------------------------------------------------------------------------------------------------------------------------*/
+// 下行数据
+message Output {
+    PackageType type = 1; // 包的类型
+    int64 request_id = 2; // 请求id
+    int32 code = 3; // 错误码
+    string message = 4; // 错误信息
+    bytes data = 5; // 数据
+}
+
+
+

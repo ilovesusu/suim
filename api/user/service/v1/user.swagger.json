@@ -1,0 +1,188 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "v1/user.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "User"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/user/{name}": {
+      "get": {
+        "summary": "hello",
+        "operationId": "User_Hello",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/HelloRsp"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "User"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "FriendHandleRsp": {
+      "type": "object",
+      "title": "好友操作响应参数"
+    },
+    "HelloRsp": {
+      "type": "object",
+      "properties": {
+        "hello": {
+          "type": "string"
+        }
+      },
+      "title": "hello响应参数"
+    },
+    "UserCreateRsp": {
+      "type": "object",
+      "title": "创建用户响应参数"
+    },
+    "UserDeleteRsp": {
+      "type": "object",
+      "title": "删除用户响应参数"
+    },
+    "UserInfoRsp": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "int64"
+        },
+        "name": {
+          "type": "string"
+        },
+        "phone": {
+          "type": "string"
+        },
+        "nickname": {
+          "type": "string"
+        },
+        "sex": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "avatarUrl": {
+          "type": "string"
+        },
+        "introduce": {
+          "type": "string"
+        },
+        "snapCall": {
+          "type": "boolean"
+        },
+        "addFriendType": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "friendPassProblem": {
+          "type": "string"
+        },
+        "friendPassAnswer": {
+          "type": "string"
+        }
+      },
+      "title": "用户信息响应参数"
+    },
+    "UserListRsp": {
+      "type": "object",
+      "properties": {
+        "list": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/UserListRspList"
+          }
+        },
+        "total": {
+          "type": "integer",
+          "format": "int32"
+        }
+      },
+      "title": "用户列表响应参数"
+    },
+    "UserListRspList": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "format": "int64"
+        },
+        "nickname": {
+          "type": "string"
+        },
+        "sex": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "avatarUrl": {
+          "type": "string"
+        },
+        "introduce": {
+          "type": "string"
+        },
+        "friendRemake": {
+          "type": "string"
+        }
+      }
+    },
+    "UserUpdateRsp": {
+      "type": "object",
+      "title": "更新用户响应参数"
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    }
+  }
+}
