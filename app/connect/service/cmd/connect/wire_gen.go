@@ -19,7 +19,8 @@ import (
 func initApp(confServer *conf.Server, data *conf.Data, logger log.Logger) (*kratos.App, func(), error) {
 	tcpServer := server.NewTCPServer()
 	webSocketServer := server.NewWebSocketServer()
-	app := newApp(logger, tcpServer, webSocketServer)
+	registrar := server.NewEtcdServer(confServer, logger)
+	app := newApp(logger, tcpServer, webSocketServer, registrar)
 	return app, func() {
 	}, nil
 }

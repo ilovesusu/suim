@@ -5,6 +5,18 @@
 
 version: '3.9'
 services:
+  user:
+    restart: always
+    image: xiejinwu/suim-user-service:v0.1.1
+    container_name: user
+    ports:
+      - "8000:8000"
+      - "9000:9000"
+    volumes:
+      - ../app/user/service/configs:/data/conf
+    networks:
+      - su-im
+
   mariadb:
     restart: always
     image: mariadb:latest

@@ -1,20 +1,23 @@
 server:
   http:
-    addr: 0.0.0.0:8000
+    addr: 0.0.0.0:6000
     timeout: 1s
   grpc:
-    addr: 0.0.0.0:9000
+    addr: 0.0.0.0:7000
     timeout: 1s
   etcd:
-    addr: 127.0.0.1:2379
+    addr: 172.21.0.2:2379
+    #    addr: 127.0.0.1:2379
     timeout: 3
 data:
   database:
     driver: mysql
-    source: root:mysql@tcp(127.0.0.1:3306)/suim
+    source: root:mysql@tcp(172.21.0.4:3306)/suim
+    #    source: root:mysql@tcp(127.0.0.1:3306)/suim
     debug: true
   redis:
-    addr: 127.0.0.1:6379
+    addr: 172.21.0.3:6379
+    #    addr: 127.0.0.1:6379
     pwd: "123456"
     read_timeout: 0.2s
     write_timeout: 0.2s
