@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+//搜索操作
+enum SearchHandleType {
+    SEARCH_UNKNOWN_HANDLE = 0;//未知
+    SEARCH_FRIEND = 1;   //好友搜索
+    SEARCH_ROOM = 2;//频道搜索
+    SEARCH_CHANNEL = 3;   //房间搜索
+    SEARCH_GROUP = 4;     //群搜索
+    SEARCH_CONTENT = 5;   //聊天内容搜索
+}
+
+message SearchPackageData {
+    SearchHandleType type = 1;
+    bytes data = 2;
+}

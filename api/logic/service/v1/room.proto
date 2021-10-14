@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+//房间操作
+enum RoomHandleType {
+    ROOM_UNKNOWN_HANDLE = 0;//未知
+    ROOM_MODIFICATION_NAME = 1;   //修改房间名称
+    ROOM_MODIFICATION_AVATAR = 2;//修改房间头像
+    ROOM_SHARE = 3;   //分享房间
+    ROOM_REPORT = 4;     //举报房间
+    ROOM_CLOSURE = 5;   //关闭房间
+    ROOM_FOUND = 6;   //创建房间
+    ROOM_SEND_BARRAGE = 7;   //发送弹幕
+    ROOM_SUBSCRIPTION = 8; //订阅房间
+}
+
+message RoomPackageData {
+    RoomHandleType type = 1;
+    bytes data = 2;
+}

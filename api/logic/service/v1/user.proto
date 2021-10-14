@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+import "third_party/google/protobuf/wrappers.proto";
+import "third_party/validate/validate.proto";
+
+//个人操作(上行data数据)
+message UserHandle{
+    UserHandleType type = 1;//操作类型
+    bytes data = 2;//数据
+}
+
+//个人操作类型枚举
+enum UserHandleType{
+    UNKNOWN_USER_HANDLE = 0;//未知
+    UPDATE_USER = 1;//修改个人信息
+    SEARCH_USER = 2;//查看个人信息
+}
+
+//修改个人信息请求参数(上行个人操作data数据)
+message UserUpdateReq{
+    google.protobuf.StringValue name = 1 [(validate.rules).string.min_len = 2];//姓名
+    google.protobuf.StringValue id_card = 2 [(validate.rules).string.len = 18];//身份证号码
+    google.protobuf.StringValue password = 3 [(validate.rules).string.min_len = 8];//密码
+    google.protobuf.StringValue phone = 4 [(validate.rules).string.len = 11];//电话号码
+    google.protobuf.StringValue nickname = 5 [(validate.rules).string.min_len = 1];//昵称
+    google.protobuf.Int32Value sex = 6 [(validate.rules).int32 = {in: [1, 2, 3]}];//性别
+    google.protobuf.StringValue avatar_url = 7 [(validate.rules).string.uri = true];//头像地址
+    google.protobuf.StringValue introduce = 8;//个人介绍
+    google.protobuf.BoolValue snap_call = 9;//是否开启临时会话
+    google.protobuf.Int32Value add_friend_type = 10 [(validate.rules).int32 = {in:[1, 2, 3, 4]}];//添加好友方式
+    google.protobuf.StringValue friend_pass_problem = 11 [(validate.rules).string.min_len = 1];//通过问题通过好友验证问题
+    google.protobuf.StringValue friend_pass_answer = 12 [(validate.rules).string.min_len = 1];//通过问题通过好友验证答案
+}
+
