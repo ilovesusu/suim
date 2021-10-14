@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+//群组操作
+enum GroupHandleType {
+    GROUP_UNKNOWN_HANDLE = 0;//未知
+    GROUP_FOUND = 1;   //创建群
+    GROUP_DISSOLVE = 2;   //解散群
+    GROUP_INVITATION_FRIEND = 3;   //邀请好友进群
+    GROUP_MODIFICATION_NAME = 4;   //修改群名称
+    GROUP_EDIT_PROCLAMATION = 5;   //编辑群公告
+    GROUP_LOOK_PROCLAMATION = 6;   //查看群公告
+    GROUP_REMARK = 7;   //群名备注
+    GROUP_NO_DISTURB = 8;   //群消息免打扰
+    GROUP_QUIT = 9;   //退出群
+    GROUP_TOP = 10;   //置顶群
+    GROUP_MODIFICATION_MY_NICKNAME = 11;   //修改我在群的昵称
+    GROUP_SHOW_ALL_NICKNAME = 12;   //显示群成员昵称
+    GROUP_LIST = 13;   //群成员列表
+    GROUP_ADD_FRIEND = 14;   //添加群好友
+    GROUP_CHAT_RECORD = 15;   //查找群聊天记录
+}
+
+message GroupPackageData {
+    GroupHandleType type = 1;
+    bytes data = 2;
+}
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+// 上行数据
+message Input {
+    string version = 1; //版本
+    PackageType type = 2; // 包的类型
+    int64 request_id = 3; // 请求id
+    bytes data = 4; // 数据
+}
+
+// 下行数据
+message Output {
+    PackageType type = 1; // 包的类型
+    int64 request_id = 2; // 请求id
+    int32 code = 3; // 错误码
+    string message = 4; // 错误信息
+    bytes data = 5; // 数据
+}
+
+enum  PackageType {
+    PT_UNKNOWN = 0; // 未知
+    PT_SIGN_IN = 1; // 设备登录请求
+    PT_HEARTBEAT = 2; // 心跳
+    PT_MESSAGE = 3; // 消息(类)
+    PT_GROUP = 4; //群组操作
+    PT_FRIEND = 5; //好友操作
+    PT_ROOM = 6; //房间操作
+    PT_CHANNEL = 7; //频道操作
+    PT_MINE = 8; //我的操作
+    PT_SEARCH = 9; //搜索操作(好友,群组...)
+    PT_NOTIFY = 10; //通知
+}
+
+// PackageType=1
+message SignInInput {
+    int64 device_id = 1; // 设备id
+    int64 user_id = 2; // 用户id
+    string token = 3; // 秘钥
+}

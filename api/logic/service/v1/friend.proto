@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+//性别枚举
+enum Sex{
+    UNKNOWN_SEX = 0;//未知
+    SECRET = 1;//保密
+    BOY = 2;//男
+    GIRL = 3;//女
+}
+//添加好友方式枚举
+enum AddFriendType{
+    UNKNOWN_TYPE = 0;//未知
+    PASS = 1;//直接通过
+    VERIFY = 2;//验证通过
+    PROBLEM = 3;//问题通过
+    REFUSE = 4;//拒绝添加
+}
+//好友操作(上行data数据)
+message FriendHandle{
+    FriendHandleType type = 1;//操作类型
+    bytes data = 2;//数据
+}
+//好友操作类型枚举
+enum FriendHandleType{
+    UNKNOWN_FRIEND_TYPE = 0;//未知
+    CREATE_FRIEND = 1;//添加好友
+    UPDATE_FRIEND = 2;//修改好友信息
+    SEARCH_FRIEND = 3;//查找好友信息
+    DELETE_FRIEND = 4;//删除好友
+    BLACK_FRIEND = 5;//拉黑好友
+    LIST_FRIEND = 6;//好友列表
+    PASS_FRIEND = 7;//通过好友请求
+    REFUSE_FRIEND = 8;//拒绝好友请求
+}
+//添加好友请求参数
+message CreateFriendReq{}
+//修改好友信息请求参数
+message UpdateFriendReq{}
+//查找好友信息请求参数
+message SearchFriendReq{}
+//删除好友请求参数
+message DeleteFriendReq{}
+//拉黑好友请求参数
+message BlackFriendReq{}
+//通过好友请求
+
+
