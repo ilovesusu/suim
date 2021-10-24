@@ -15,26 +15,55 @@ service User {
         };
     }
     //创建用户
-    rpc UserCreate (UserCreateReq) returns (UserCreateRsp){}
-    //更新用户
-    rpc UserUpdate (UserUpdateReq) returns (UserUpdateRsp){}
-    //删除用户
-    rpc UserDelete (UserDeleteReq) returns (UserDeleteRsp){}
-    //用户信息
-    rpc UserInfo (UserInfoReq) returns (UserInfoRsp){}
-    //用户列表
-    rpc UserList (UserListReq) returns (UserListRsp){}
-    //好友操作(申请,同意,拉黑,删除...)
-    rpc FriendHandle(FriendHandleReq)returns(FriendHandleRsp){}
+    rpc CreateUser (CreateUserReq)returns(CreateUserRsp){}
+    //修改身份信息
+    rpc UpdateIdCard(UpdateIdCardReq)returns(UpdateIdCardRsp){}
+    //修改电话号码
+    rpc UpdatePhone(UpdatePhoneReq)returns(UpdatePhoneRsp){}
+    //修改密码
+    rpc UpdatePassword(UpdatePasswordReq)returns(UpdatePasswordRsp){}
+    //忘记密码
+    rpc ForgetPassword(ForgetPasswordReq)returns(ForgetPasswordRsp){}
+    //修改昵称
+    rpc UpdateNickname(UpdateNicknameReq)returns(UpdateNicknameRsp){}
+    //修改性别
+    rpc UpdateSex(UpdateSexReq)returns(UpdateSexRsp){}
+    //修改头像
+    rpc UpdateAvatarUrl(UpdateAvatarUrlReq)returns(UpdateAvatarUrlRsp){}
+    //修改个性签名
+    rpc UpdatePersonalSign(UpdatePersonalSignReq)returns(UpdatePersonalSignRsp){}
+    //修改个人介绍
+    rpc UpdateIntroduce(UpdateIntroduceReq)returns(UpdateIntroduceRsp){}
+    //修改是否允许临时会话
+    rpc UpdateSnapCall(UpdateSnapCallReq)returns(UpdateSnapCallRsp){}
+    //修改用户添加好友方式
+    rpc UpdateFriendPass(UpdateFriendPassReq)returns(UpdateFriendPassRsp){}
+    //删除帐号
+    rpc DeleteUser (DeleteUserReq)returns(DeleteUserRsp){}
+    //查询用户基本信息
+    rpc InfoUserBase(InfoUserBaseReq)returns(InfoUserBaseRsp){}
+    //查询用户帐号信息
+    rpc InfoAccount(InfoAccountReq)returns(InfoAccountRsp){}
+    //查询用户是否允许临时会话
+    rpc InfoSnapCall(InfoSnapCallReq)returns(InfoSnapCallRsp){}
+    //查询用户添加好友方式
+    rpc InfoFriendPass(InfoFriendPassReq)returns(InfoFriendPassRsp){}
 }
 
-//好友操作枚举
-enum FriendHandle {
-    UNKNOWN_COMMAND = 0;//未知操作
-    ADD_FRIEND = 1;//添加好友
-    PASS_FRIEND = 2;//通过好友申请
-    BLACK_FRIEND = 3;//拉黑好友
-    DELETE_FRIEND = 4;//删除好友
+//性别枚举
+enum Sex{
+    UNKNOWN_SEX = 0;//未知
+    SECRET = 1;//保密
+    BOY = 2;//男
+    GIRL = 3;//女
+}
+//添加好友方式
+enum FriendPassType{
+    UNKNOWN_FRIEND_PASS_TYPE = 0;//未知
+    PASS = 1;//直接通过
+    VERIFY = 2;//需要验证
+    QUESTIONS_AND_ANSWERS = 3;//问题答案验证
+    REFUSE = 4;//拒绝加好友
 }
 
 //hello请求参数
@@ -46,88 +75,153 @@ message HelloRsp{
     string hello = 1;
 }
 //创建用户请求参数
-message UserCreateReq {
-    string name = 1 [(validate.rules).string.min_len = 2];
-    string phone = 2 [(validate.rules).string.len = 11];
-    string nickname = 3 [(validate.rules).string.min_len = 1];
-    int32 sex = 4 [(validate.rules).int32 = {in: [1, 2, 3]}];
-    google.protobuf.StringValue avatar_url = 5 [(validate.rules).string.uri = true];
-    google.protobuf.StringValue introduce = 6;
-    bool snap_call = 7;
-    int32 add_friend_type = 8 [(validate.rules).int32 = {in:[1, 2, 3, 4]}];
-    google.protobuf.StringValue friend_pass_problem = 9 [(validate.rules).string.min_len = 1];
-    google.protobuf.StringValue friend_pass_answer = 10 [(validate.rules).string.min_len = 1];
-    string password = 11 [(validate.rules).string.min_len = 8];
-    google.protobuf.StringValue id_card = 12 [(validate.rules).string.len = 18];
+message CreateUserReq {
+    google.protobuf.StringValue name = 1 [(validate.rules).string = {min_len: 2,ignore_empty: true}];//姓名
+    google.protobuf.StringValue id_card = 2 [(validate.rules).string = {len: 18,ignore_empty: true}];//身份证号
+    string phone = 3 [(validate.rules).string = {len: 11,ignore_empty: true}];//电话号码
+    string password = 4 [(validate.rules).string = {min_len: 8,ignore_empty: true}];//密码
+    string nickname = 5 [(validate.rules).string = {min_len: 1,ignore_empty: true}];//昵称
+    int32 sex = 6 [(validate.rules).int32 = {in: [1, 2, 3]}];//性别
+    google.protobuf.StringValue avatar_url = 7 [(validate.rules).string = {uri: true,ignore_empty: true}];//头像URL
+    google.protobuf.StringValue personal_sign = 8 [(validate.rules).string = {min_len: 1,ignore_empty: true}];//个性签名
+    google.protobuf.StringValue introduce = 9 [(validate.rules).string = {min_len: 1,ignore_empty: true}];//自我介绍
+    bool snap_call = 10;//是否允许临时会话
+    int32 add_friend_type = 11 [(validate.rules).int32 = {in:[1, 2, 3, 4]}];//添加好友方式
+    google.protobuf.StringValue friend_pass_problem = 12 [(validate.rules).string = {min_len: 1,ignore_empty: true}];//通过问题添加好友的问题
+    google.protobuf.StringValue friend_pass_answer = 13 [(validate.rules).string = {min_len: 1,ignore_empty: true}];//通过问题添加好友的答案
 }
 //创建用户响应参数
-message UserCreateRsp {}
-//更新用户请求参数
-message UserUpdateReq{
-    int64 id = 1 [(validate.rules).int64 = {gt: 0}];
-    google.protobuf.StringValue name = 2 [(validate.rules).string.min_len = 2];
-    google.protobuf.StringValue phone = 3 [(validate.rules).string.len = 11];
-    google.protobuf.StringValue nickname = 4 [(validate.rules).string.min_len = 1];
-    google.protobuf.Int32Value sex = 5 [(validate.rules).int32 = {in: [1, 2, 3]}];
-    google.protobuf.StringValue avatar_url = 6 [(validate.rules).string.uri = true];
-    google.protobuf.StringValue introduce = 7;
-    google.protobuf.BoolValue snap_call = 8;
-    google.protobuf.Int32Value add_friend_type = 9 [(validate.rules).int32 = {in:[1, 2, 3, 4]}];
-    google.protobuf.StringValue friend_pass_problem = 10 [(validate.rules).string.min_len = 1];
-    google.protobuf.StringValue friend_pass_answer = 11 [(validate.rules).string.min_len = 1];
-    google.protobuf.StringValue password = 12 [(validate.rules).string.min_len = 8];
-    google.protobuf.StringValue id_card = 13 [(validate.rules).string.len = 18];
+message CreateUserRsp {}
+//修改身份信息请求参数
+message UpdateIdCardReq{
+    int64 id = 1 [(validate.rules).int64 = {gt: 0}];//用户id
+    string name = 2 [(validate.rules).string.min_len = 2];//姓名
+    string id_card = 3 [(validate.rules).string.len = 18];//身份证号
 }
-//更新用户响应参数
-message UserUpdateRsp {}
-//删除用户请求参数
-message UserDeleteReq {
-    int64 id = 1 [(validate.rules).int64 = {gt: 0}];
+//修改身份信息响应参数
+message UpdateIdCardRsp{}
+//修改电话号码请求参数
+message UpdatePhoneReq{
+    int64 id = 1 [(validate.rules).int64 = {gt: 0}];//用户id
+    string phone = 2 [(validate.rules).string.len = 11];//电话号码
 }
-//删除用户响应参数
-message UserDeleteRsp {}
-//用户信息请求参数
-message UserInfoReq {
-    int64 id = 1 [(validate.rules).int64 = {gt: 0}];
+//修改电话号码响应参数
+message UpdatePhoneRsp{}
+//修改密码请求参数
+message UpdatePasswordReq{
+    int64 id = 1 [(validate.rules).int64 = {gt: 0}];//用户id
+    string old_password = 2 [(validate.rules).string.min_len = 8];//旧密码
+    string new_password = 3 [(validate.rules).string.min_len = 8];//新密码
 }
-//用户信息响应参数
-message UserInfoRsp {
-    int64 id = 1;
-    string name = 2;
-    string phone = 3;
-    string nickname = 4;
-    int32 sex = 5;
-    google.protobuf.StringValue avatar_url = 6;
-    google.protobuf.StringValue introduce = 7;
-    bool snap_call = 8;
-    int32 add_friend_type = 9;
-    google.protobuf.StringValue friend_pass_problem = 10;
-    google.protobuf.StringValue friend_pass_answer = 11;
+//修改密码响应参数
+message UpdatePasswordRsp{}
+//忘记密码请求参数
+message ForgetPasswordReq{
+    string phone = 1 [(validate.rules).string.len = 11];//手机号
+    string password = 2 [(validate.rules).string.min_len = 8];//密码
+    string code = 3 [(validate.rules).string.len = 11];//验证码
 }
-//用户列表请求参数
-message UserListReq {
-    int64 uid = 1 [(validate.rules).int64 = {gt: 0}];
-    int32 friend_status = 2 [(validate.rules).int32 = {gt: 0}];
+//忘记密码响应参数
+message ForgetPasswordRsp{}
+//修改昵称请求参数
+message UpdateNicknameReq{
+    int64 id = 1 [(validate.rules).int64 = {gt: 0}];//用户id
+    string nickname = 2 [(validate.rules).string.min_len = 1];//昵称
 }
-//用户列表响应参数
-message UserListRsp{
-    message List{
-        int64 user_id = 1;
-        string nickname = 2;
-        int32 sex = 3;
-        google.protobuf.StringValue avatar_url = 4;
-        google.protobuf.StringValue introduce = 5;
-        google.protobuf.StringValue friend_remake = 6;
-    }
-    repeated List list = 1;
-    int32 total = 2;
+//修改昵称响应参数
+message UpdateNicknameRsp{}
+//修改性别请求参数
+message UpdateSexReq{
+    int64 id = 1 [(validate.rules).int64 = {gt: 0}];//用户id
+    int32 sex = 2 [(validate.rules).int32 = {in: [1, 2, 3]}];//性别
 }
-//好友操作请求参数
-message FriendHandleReq{
-    int64 uid = 1 [(validate.rules).int64 = {gt: 0}];
-    int64 fid = 2 [(validate.rules).int64 = {gt: 0}];
-    int32 command_type = 3 [(validate.rules).int32 = {in:[1, 2, 3, 4]}];
+//修改性别响应参数
+message UpdateSexRsp{}
+//修改头像请求参数
+message UpdateAvatarUrlReq{
+    int64 id = 1 [(validate.rules).int64 = {gt: 0}];//用户id
+    string avatar_url = 2 [(validate.rules).string.uri = true];//头像URL
 }
-//好友操作响应参数
-message FriendHandleRsp{}
+//修改头像响应参数
+message UpdateAvatarUrlRsp{}
+//修改个性签名请求参数
+message UpdatePersonalSignReq{
+    int64 id = 1 [(validate.rules).int64 = {gt: 0}];//用户id
+    string personal_sign = 2 [(validate.rules).string.min_len = 1];//个性签名
+}
+//修改个性签名响应参数
+message UpdatePersonalSignRsp{}
+//修改自我介绍请求参数
+message UpdateIntroduceReq{
+    int64 id = 1 [(validate.rules).int64 = {gt: 0}];//用户id
+    string introduce = 2 [(validate.rules).string.min_len = 1];//自我介绍
+}
+//修改自我介绍响应参数
+message UpdateIntroduceRsp{}
+//修改是否允许临时会话请求参数
+message UpdateSnapCallReq{
+    int64 id = 1 [(validate.rules).int64 = {gt: 0}];//用户id
+    bool snap_call = 2;//是否允许临时会话
+}
+//修改是否允许临时会话响应参数
+message UpdateSnapCallRsp{}
+//修改添加好友方式请求参数
+message UpdateFriendPassReq{
+    int64 id = 1 [(validate.rules).int64 = {gt: 0}];//用户id
+    int32 add_friend_type = 2 [(validate.rules).int32 = {in:[1, 2, 3, 4]}];//添加好友方式
+    google.protobuf.StringValue friend_pass_problem = 3 [(validate.rules).string = {min_len: 1,ignore_empty: true}];//通过问题添加好友的问题
+    google.protobuf.StringValue friend_pass_answer = 4 [(validate.rules).string = {min_len: 1,ignore_empty: true}];//通过问题添加好友的答案
+}
+//修改添加好友方式响应参数
+message UpdateFriendPassRsp{}
+//删除帐号请求参数
+message DeleteUserReq {
+    int64 id = 1 [(validate.rules).int64 = {gt: 0}];//用户id
+    string password = 2 [(validate.rules).string = {min_len: 8,ignore_empty: true}];//密码
+}
+//删除帐号响应参数
+message DeleteUserRsp {}
+//查询用户基本信息请求参数
+message InfoUserBaseReq{
+    int64 id = 1 [(validate.rules).int64 = {gt: 0}];//用户id
+}
+//查询用户基本信息响应参数
+message InfoUserBaseRsp{
+    string number = 1;//用户号
+    string nickname = 2;//昵称
+    int32 sex = 3;//性别
+    google.protobuf.StringValue avatar_url = 4;//头像地址
+    google.protobuf.StringValue personal_sign = 5;//个性签名
+    google.protobuf.StringValue introduce = 6;//自我介绍
+}
+//查询用户帐号信息请求参数
+message InfoAccountReq{
+    int64 id = 1 [(validate.rules).int64 = {gt: 0}];//用户id
+}
+//查询用户帐号信息响应参数
+message InfoAccountRsp{
+    string phone = 1;//手机号
+    google.protobuf.StringValue name = 2;//姓名
+    google.protobuf.StringValue id_card = 3;//身份证号码
+}
+//查询用户是否允许临时会话请求参数
+message InfoSnapCallReq{
+    int64 id = 1 [(validate.rules).int64 = {gt: 0}];//用户id
+}
+//查询用户是否允许临时会话响应参数
+message InfoSnapCallRsp{
+    bool snap_call = 1;//是否允许临时会话
+}
+//查询用户添加好友方式请求参数
+message InfoFriendPassReq{
+    int64 id = 1 [(validate.rules).int64 = {gt: 0}];//用户id
+}
+//查询用户添加好友方式响应参数
+message InfoFriendPassRsp{
+    int32 friend_pass_type = 1;//添加好友方式
+    google.protobuf.StringValue friend_pass_problem = 2;//通过问题添加好友的问题
+    google.protobuf.StringValue friend_pass_answer = 3;//通过问题添加好友的答案
+}
+
+
 

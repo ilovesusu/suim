@@ -49,9 +49,17 @@
     }
   },
   "definitions": {
-    "FriendHandleRsp": {
+    "CreateUserRsp": {
       "type": "object",
-      "title": "好友操作响应参数"
+      "title": "创建用户响应参数"
+    },
+    "DeleteUserRsp": {
+      "type": "object",
+      "title": "删除帐号响应参数"
+    },
+    "ForgetPasswordRsp": {
+      "type": "object",
+      "title": "忘记密码响应参数"
     },
     "HelloRsp": {
       "type": "object",
@@ -62,44 +70,25 @@
       },
       "title": "hello响应参数"
     },
-    "UserCreateRsp": {
-      "type": "object",
-      "title": "创建用户响应参数"
-    },
-    "UserDeleteRsp": {
-      "type": "object",
-      "title": "删除用户响应参数"
-    },
-    "UserInfoRsp": {
+    "InfoAccountRsp": {
       "type": "object",
       "properties": {
-        "id": {
-          "type": "string",
-          "format": "int64"
+        "phone": {
+          "type": "string"
         },
         "name": {
           "type": "string"
         },
-        "phone": {
+        "idCard": {
           "type": "string"
-        },
-        "nickname": {
-          "type": "string"
-        },
-        "sex": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "avatarUrl": {
-          "type": "string"
-        },
-        "introduce": {
-          "type": "string"
-        },
-        "snapCall": {
-          "type": "boolean"
-        },
-        "addFriendType": {
+        }
+      },
+      "title": "查询用户帐号信息响应参数"
+    },
+    "InfoFriendPassRsp": {
+      "type": "object",
+      "properties": {
+        "friendPassType": {
           "type": "integer",
           "format": "int32"
         },
@@ -110,30 +99,22 @@
           "type": "string"
         }
       },
-      "title": "用户信息响应参数"
+      "title": "查询用户添加好友方式响应参数"
     },
-    "UserListRsp": {
+    "InfoSnapCallRsp": {
       "type": "object",
       "properties": {
-        "list": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/UserListRspList"
-          }
-        },
-        "total": {
-          "type": "integer",
-          "format": "int32"
+        "snapCall": {
+          "type": "boolean"
         }
       },
-      "title": "用户列表响应参数"
+      "title": "查询用户是否允许临时会话响应参数"
     },
-    "UserListRspList": {
+    "InfoUserBaseRsp": {
       "type": "object",
       "properties": {
-        "userId": {
-          "type": "string",
-          "format": "int64"
+        "number": {
+          "type": "string"
         },
         "nickname": {
           "type": "string"
@@ -145,17 +126,54 @@
         "avatarUrl": {
           "type": "string"
         },
-        "introduce": {
+        "personalSign": {
           "type": "string"
         },
-        "friendRemake": {
+        "introduce": {
           "type": "string"
         }
-      }
+      },
+      "title": "查询用户基本信息响应参数"
     },
-    "UserUpdateRsp": {
+    "UpdateAvatarUrlRsp": {
       "type": "object",
-      "title": "更新用户响应参数"
+      "title": "修改头像响应参数"
+    },
+    "UpdateFriendPassRsp": {
+      "type": "object",
+      "title": "修改添加好友方式响应参数"
+    },
+    "UpdateIdCardRsp": {
+      "type": "object",
+      "title": "修改身份信息响应参数"
+    },
+    "UpdateIntroduceRsp": {
+      "type": "object",
+      "title": "修改自我介绍响应参数"
+    },
+    "UpdateNicknameRsp": {
+      "type": "object",
+      "title": "修改昵称响应参数"
+    },
+    "UpdatePasswordRsp": {
+      "type": "object",
+      "title": "修改密码响应参数"
+    },
+    "UpdatePersonalSignRsp": {
+      "type": "object",
+      "title": "修改个性签名响应参数"
+    },
+    "UpdatePhoneRsp": {
+      "type": "object",
+      "title": "修改电话号码响应参数"
+    },
+    "UpdateSexRsp": {
+      "type": "object",
+      "title": "修改性别响应参数"
+    },
+    "UpdateSnapCallRsp": {
+      "type": "object",
+      "title": "修改是否允许临时会话响应参数"
     },
     "protobufAny": {
       "type": "object",

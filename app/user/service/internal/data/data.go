@@ -41,6 +41,11 @@ func NewData(c *conf.Data, logger log.Logger) (*Data, func(), error) {
 		_ = logger.Log(log.LevelError, "gorm", err)
 		return nil, cleanup, err
 	}
+	if err = db.AutoMigrate(biz.MigratorTable...); err != nil {
+		_ = logger.Log(log.LevelError, "MIGRATOR TABLE", err)
+		return nil, nil, err
+	}
+	_ = logger.Log(log.LevelInfo, "MIGRATOR TABLE", "AutoMigrate table success!")
 	if c.Database.Debug {
 		db = db.Debug()
 	}
@@ -51,10 +56,13 @@ func NewData(c *conf.Data, logger log.Logger) (*Data, func(), error) {
 		WriteTimeout: c.Redis.WriteTimeout.AsDuration(),
 	})
 	_ = logger.Log(log.LevelInfo, "DATABASE-REDIS", "connect init success!")
-	if err = db.AutoMigrate(biz.MigratorTable...); err != nil {
-		_ = logger.Log(log.LevelError, "MIGRATOR TABLE", err)
-		return nil, nil, err
-	}
-	_ = logger.Log(log.LevelInfo, "MIGRATOR TABLE", "AutoMigrate table success!")
 	return &Data{db: db, rc: rc}, cleanup, nil
+}
+
+// NewUserRepo .
+func NewUserRepo(data *Data, logger log.Logger) biz.UserRepo {
+	return &UserRepo{
+		data: data,
+		log:  log.NewHelper(logger),
+	}
 }

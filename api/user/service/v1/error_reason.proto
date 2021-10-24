@@ -12,5 +12,9 @@ enum ErrorReason {
     option (errors.default_code) = 500;
 
     UNKNOWN_ERROR = 0;//未知错误
-    PHONE_IS_USED = 1;//手机号已被使用
+    SUCCESS = 1;//成功
+    FAIL = 2;//失败
+    PHONE_IS_USED = 3;//手机号已被使用
+    QUESTIONS_NOT_NULL = 4;//好友通过问题不能为空
+    ANSWERS_NOT_NULL = 5;//好友通过答案不能为空
 }
