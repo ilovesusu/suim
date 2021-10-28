@@ -2,19 +2,19 @@ package service
 
 import (
 	"context"
-	v1 "github.com/ilovesusu/suim/api/user/service/v1"
+	"github.com/ilovesusu/suim/api/user/service/v1/user"
 	"github.com/ilovesusu/suim/app/user/service/internal/biz"
 	"github.com/ilovesusu/suim/pkg"
 )
 
 // Hello hello测试
-func (us *UserService) Hello(ctx context.Context, req *v1.HelloReq) (*v1.HelloRsp, error) {
-	return &v1.HelloRsp{Hello: "你好!" + req.Name}, nil
+func (us *UserService) Hello(ctx context.Context, req *user.HelloReq) (*user.HelloRsp, error) {
+	return &user.HelloRsp{Hello: "你好!" + req.Name}, nil
 }
 
 // CreateUser 创建用户
-func (us *UserService) CreateUser(ctx context.Context, req *v1.CreateUserReq) (*v1.CreateUserRsp, error) {
-	user := &biz.UserInfo{
+func (us *UserService) CreateUser(ctx context.Context, req *user.CreateUserReq) (*user.CreateUserRsp, error) {
+	info := &biz.UserInfo{
 		Phone:             req.Phone,
 		Password:          req.Password,
 		Name:              pkg.GetFromStringValue(req.Name),
@@ -29,14 +29,14 @@ func (us *UserService) CreateUser(ctx context.Context, req *v1.CreateUserReq) (*
 		FriendPassProblem: pkg.GetFromStringValue(req.FriendPassProblem),
 		FriendPassAnswer:  pkg.GetFromStringValue(req.FriendPassAnswer),
 	}
-	if err := us.uc.CreateUser(ctx, user); err != nil {
+	if err := us.uc.CreateUser(ctx, info); err != nil {
 		return nil, err
 	}
 	return nil, nil
 }
 
 // UpdateIdCard 修改身份信息
-func (us *UserService) UpdateIdCard(ctx context.Context, req *v1.UpdateIdCardReq) (*v1.UpdateIdCardRsp, error) {
+func (us *UserService) UpdateIdCard(ctx context.Context, req *user.UpdateIdCardReq) (*user.UpdateIdCardRsp, error) {
 	if err := us.uc.UpdateAccount(ctx, &biz.UpdateIdCardReq{
 		Id:     req.Id,
 		Name:   req.Name,
@@ -48,7 +48,7 @@ func (us *UserService) UpdateIdCard(ctx context.Context, req *v1.UpdateIdCardReq
 }
 
 // UpdatePhone 修改电话号码
-func (us *UserService) UpdatePhone(ctx context.Context, req *v1.UpdatePhoneReq) (*v1.UpdatePhoneRsp, error) {
+func (us *UserService) UpdatePhone(ctx context.Context, req *user.UpdatePhoneReq) (*user.UpdatePhoneRsp, error) {
 	if err := us.uc.UpdatePhone(ctx, &biz.UpdatePhoneReq{
 		Id:    req.Id,
 		Phone: req.Phone,
@@ -59,7 +59,7 @@ func (us *UserService) UpdatePhone(ctx context.Context, req *v1.UpdatePhoneReq) 
 }
 
 // UpdatePassword 修改密码
-func (us *UserService) UpdatePassword(ctx context.Context, req *v1.UpdatePasswordReq) (*v1.UpdatePasswordRsp, error) {
+func (us *UserService) UpdatePassword(ctx context.Context, req *user.UpdatePasswordReq) (*user.UpdatePasswordRsp, error) {
 	if err := us.uc.UpdatePassword(ctx, &biz.UpdatePasswordReq{
 		Id:          req.Id,
 		OldPassword: req.OldPassword,
@@ -71,7 +71,7 @@ func (us *UserService) UpdatePassword(ctx context.Context, req *v1.UpdatePasswor
 }
 
 // ForgetPassword 忘记密码
-func (us *UserService) ForgetPassword(ctx context.Context, req *v1.ForgetPasswordReq) (*v1.ForgetPasswordRsp, error) {
+func (us *UserService) ForgetPassword(ctx context.Context, req *user.ForgetPasswordReq) (*user.ForgetPasswordRsp, error) {
 	if err := us.uc.ForgetPassword(ctx, &biz.ForgetPasswordReq{
 		Phone:    req.Phone,
 		Password: req.Password,
@@ -83,7 +83,7 @@ func (us *UserService) ForgetPassword(ctx context.Context, req *v1.ForgetPasswor
 }
 
 // UpdateNickname 修改昵称
-func (us *UserService) UpdateNickname(ctx context.Context, req *v1.UpdateNicknameReq) (*v1.UpdateNicknameRsp, error) {
+func (us *UserService) UpdateNickname(ctx context.Context, req *user.UpdateNicknameReq) (*user.UpdateNicknameRsp, error) {
 	if err := us.uc.UpdateNickname(ctx, &biz.UpdateNicknameReq{
 		Id:       req.Id,
 		Nickname: req.Nickname,
@@ -94,7 +94,7 @@ func (us *UserService) UpdateNickname(ctx context.Context, req *v1.UpdateNicknam
 }
 
 // UpdateSex 修改性别
-func (us *UserService) UpdateSex(ctx context.Context, req *v1.UpdateSexReq) (*v1.UpdateSexRsp, error) {
+func (us *UserService) UpdateSex(ctx context.Context, req *user.UpdateSexReq) (*user.UpdateSexRsp, error) {
 	if err := us.uc.UpdateSex(ctx, &biz.UpdateSexReq{
 		Id:  req.Id,
 		Sex: req.Sex,
@@ -105,7 +105,7 @@ func (us *UserService) UpdateSex(ctx context.Context, req *v1.UpdateSexReq) (*v1
 }
 
 // UpdateAvatarUrl 修改头像
-func (us *UserService) UpdateAvatarUrl(ctx context.Context, req *v1.UpdateAvatarUrlReq) (*v1.UpdateAvatarUrlRsp, error) {
+func (us *UserService) UpdateAvatarUrl(ctx context.Context, req *user.UpdateAvatarUrlReq) (*user.UpdateAvatarUrlRsp, error) {
 	if err := us.uc.UpdateAvatarUrl(ctx, &biz.UpdateAvatarUrlReq{
 		Id:        req.Id,
 		AvatarUrl: req.AvatarUrl,
@@ -116,7 +116,7 @@ func (us *UserService) UpdateAvatarUrl(ctx context.Context, req *v1.UpdateAvatar
 }
 
 // UpdatePersonalSign 修改个性签名
-func (us *UserService) UpdatePersonalSign(ctx context.Context, req *v1.UpdatePersonalSignReq) (*v1.UpdatePersonalSignRsp, error) {
+func (us *UserService) UpdatePersonalSign(ctx context.Context, req *user.UpdatePersonalSignReq) (*user.UpdatePersonalSignRsp, error) {
 	if err := us.uc.UpdatePersonalSign(ctx, &biz.UpdatePersonalSignReq{
 		Id:           req.Id,
 		PersonalSign: req.PersonalSign,
@@ -127,7 +127,7 @@ func (us *UserService) UpdatePersonalSign(ctx context.Context, req *v1.UpdatePer
 }
 
 // UpdateIntroduce 修改个人介绍
-func (us *UserService) UpdateIntroduce(ctx context.Context, req *v1.UpdateIntroduceReq) (*v1.UpdateIntroduceRsp, error) {
+func (us *UserService) UpdateIntroduce(ctx context.Context, req *user.UpdateIntroduceReq) (*user.UpdateIntroduceRsp, error) {
 	if err := us.uc.UpdateIntroduce(ctx, &biz.UpdateIntroduceReq{
 		Id:        req.Id,
 		Introduce: req.Introduce,
@@ -138,7 +138,7 @@ func (us *UserService) UpdateIntroduce(ctx context.Context, req *v1.UpdateIntrod
 }
 
 // UpdateSnapCall 修改是否允许临时会话
-func (us *UserService) UpdateSnapCall(ctx context.Context, req *v1.UpdateSnapCallReq) (*v1.UpdateSnapCallRsp, error) {
+func (us *UserService) UpdateSnapCall(ctx context.Context, req *user.UpdateSnapCallReq) (*user.UpdateSnapCallRsp, error) {
 	if err := us.uc.UpdateSnapCall(ctx, &biz.UpdateSnapCallReq{
 		Id:       req.Id,
 		SnapCall: req.SnapCall,
@@ -149,7 +149,7 @@ func (us *UserService) UpdateSnapCall(ctx context.Context, req *v1.UpdateSnapCal
 }
 
 // UpdateFriendPass 修改用户添加好友方式
-func (us *UserService) UpdateFriendPass(ctx context.Context, req *v1.UpdateFriendPassReq) (*v1.UpdateFriendPassRsp, error) {
+func (us *UserService) UpdateFriendPass(ctx context.Context, req *user.UpdateFriendPassReq) (*user.UpdateFriendPassRsp, error) {
 	if err := us.uc.UpdateFriendPass(ctx, &biz.UpdateFriendPassReq{
 		Id:                req.Id,
 		FriendPassType:    req.AddFriendType,
@@ -162,7 +162,7 @@ func (us *UserService) UpdateFriendPass(ctx context.Context, req *v1.UpdateFrien
 }
 
 // DeleteUser 删除帐号
-func (us *UserService) DeleteUser(ctx context.Context, req *v1.DeleteUserReq) (*v1.DeleteUserRsp, error) {
+func (us *UserService) DeleteUser(ctx context.Context, req *user.DeleteUserReq) (*user.DeleteUserRsp, error) {
 	if err := us.uc.DeleteUser(ctx, &biz.DeleteUserReq{
 		Id:       req.Id,
 		Password: req.Password,
@@ -173,12 +173,12 @@ func (us *UserService) DeleteUser(ctx context.Context, req *v1.DeleteUserReq) (*
 }
 
 // InfoUserBase 查询用户基本信息
-func (us *UserService) InfoUserBase(ctx context.Context, req *v1.InfoUserBaseReq) (*v1.InfoUserBaseRsp, error) {
+func (us *UserService) InfoUserBase(ctx context.Context, req *user.InfoUserBaseReq) (*user.InfoUserBaseRsp, error) {
 	info, err := us.uc.InfoUserBase(ctx, req.Id)
 	if err != nil {
 		return nil, err
 	}
-	return &v1.InfoUserBaseRsp{
+	return &user.InfoUserBaseRsp{
 		Number:       info.Number,
 		Nickname:     info.Nickname,
 		Sex:          info.Sex,
@@ -189,12 +189,12 @@ func (us *UserService) InfoUserBase(ctx context.Context, req *v1.InfoUserBaseReq
 }
 
 // InfoAccount 查询用户身份信息
-func (us *UserService) InfoAccount(ctx context.Context, req *v1.InfoAccountReq) (*v1.InfoAccountRsp, error) {
+func (us *UserService) InfoAccount(ctx context.Context, req *user.InfoAccountReq) (*user.InfoAccountRsp, error) {
 	info, err := us.uc.InfoAccount(ctx, req.Id)
 	if err != nil {
 		return nil, err
 	}
-	return &v1.InfoAccountRsp{
+	return &user.InfoAccountRsp{
 		Phone:  info.Phone,
 		Name:   pkg.CreateStringValuePtr(info.Name),
 		IdCard: pkg.CreateStringValuePtr(info.IdCard),
@@ -202,21 +202,21 @@ func (us *UserService) InfoAccount(ctx context.Context, req *v1.InfoAccountReq) 
 }
 
 // InfoSnapCall 查询用户是否允许临时会话
-func (us *UserService) InfoSnapCall(ctx context.Context, req *v1.InfoSnapCallReq) (*v1.InfoSnapCallRsp, error) {
+func (us *UserService) InfoSnapCall(ctx context.Context, req *user.InfoSnapCallReq) (*user.InfoSnapCallRsp, error) {
 	info, err := us.uc.InfoSnapCall(ctx, req.Id)
 	if err != nil {
 		return nil, err
 	}
-	return &v1.InfoSnapCallRsp{SnapCall: *info}, nil
+	return &user.InfoSnapCallRsp{SnapCall: *info}, nil
 }
 
 // InfoFriendPass 查询用户添加好友方式
-func (us *UserService) InfoFriendPass(ctx context.Context, req *v1.InfoFriendPassReq) (*v1.InfoFriendPassRsp, error) {
+func (us *UserService) InfoFriendPass(ctx context.Context, req *user.InfoFriendPassReq) (*user.InfoFriendPassRsp, error) {
 	info, err := us.uc.InfoFriendPass(ctx, req.Id)
 	if err != nil {
 		return nil, err
 	}
-	return &v1.InfoFriendPassRsp{
+	return &user.InfoFriendPassRsp{
 		FriendPassType:    info.FriendPassType,
 		FriendPassProblem: pkg.CreateStringValuePtr(info.FriendPassProblem),
 		FriendPassAnswer:  pkg.CreateStringValuePtr(info.FriendPassAnswer),

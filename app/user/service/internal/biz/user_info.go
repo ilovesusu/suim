@@ -3,6 +3,7 @@ package biz
 import (
 	"context"
 	v1 "github.com/ilovesusu/suim/api/user/service/v1"
+	"github.com/ilovesusu/suim/api/user/service/v1/user"
 	"strings"
 )
 
@@ -26,16 +27,16 @@ type UserInfo struct {
 }
 
 // CreateUser 创建用户
-func (u *UserUsecase) CreateUser(ctx context.Context, user *UserInfo) error {
-	if user.FriendPassType == int32(v1.FriendPassType_QUESTIONS_AND_ANSWERS) {
-		if user.FriendPassProblem == nil || (user.FriendPassProblem != nil && len(strings.TrimSpace(*user.FriendPassProblem)) == 0) {
+func (u *UserUsecase) CreateUser(ctx context.Context, req *UserInfo) error {
+	if req.FriendPassType == int32(user.FriendPassType_QUESTIONS_AND_ANSWERS) {
+		if req.FriendPassProblem == nil || (req.FriendPassProblem != nil && len(strings.TrimSpace(*req.FriendPassProblem)) == 0) {
 			return v1.ErrorQuestionsNotNull("通过问题添加好友,问题不能为空")
 		}
-		if user.FriendPassAnswer == nil || (user.FriendPassAnswer != nil && len(strings.TrimSpace(*user.FriendPassAnswer)) == 0) {
+		if req.FriendPassAnswer == nil || (req.FriendPassAnswer != nil && len(strings.TrimSpace(*req.FriendPassAnswer)) == 0) {
 			return v1.ErrorAnswersNotNull("通过问题添加好友,答案不能为空")
 		}
 	}
-	return u.repo.CreateUser(ctx, user)
+	return u.repo.CreateUser(ctx, req)
 }
 
 // UpdateAccount 修改身份信息
@@ -91,7 +92,7 @@ func (u *UserUsecase) UpdateSnapCall(ctx context.Context, req *UpdateSnapCallReq
 
 // UpdateFriendPass 修改添加好友方式
 func (u *UserUsecase) UpdateFriendPass(ctx context.Context, req *UpdateFriendPassReq) error {
-	if req.FriendPassType == int32(v1.FriendPassType_QUESTIONS_AND_ANSWERS) {
+	if req.FriendPassType == int32(user.FriendPassType_QUESTIONS_AND_ANSWERS) {
 		if req.FriendPassProblem == nil || (req.FriendPassProblem != nil && len(strings.TrimSpace(*req.FriendPassProblem)) == 0) {
 			return v1.ErrorQuestionsNotNull("通过问题添加好友,问题不能为空")
 		}

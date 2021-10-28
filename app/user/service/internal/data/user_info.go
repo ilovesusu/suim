@@ -3,19 +3,20 @@ package data
 import (
 	"context"
 	"github.com/go-kratos/kratos/v2/log"
-	v1 "github.com/ilovesusu/suim/api/user/service/v1"
+	"github.com/ilovesusu/suim/api/user/service/v1"
 	"github.com/ilovesusu/suim/app/user/service/internal/biz"
 	"github.com/ilovesusu/suim/app/user/service/internal/pkg"
 	"time"
 )
 
+// UserRepo 好友回购结构体
 type UserRepo struct {
 	data *Data
 	log  *log.Helper
 }
 
 // CreateUser 创建用户
-func (uc *UserRepo) CreateUser(ctx context.Context, user *biz.UserInfo) error {
+func (uc *UserRepo) CreateUser(_ context.Context, user *biz.UserInfo) error {
 	user.CreateTime = time.Now()
 	var (
 		db     = uc.data.db.Model(&biz.UserInfo{})
@@ -56,7 +57,7 @@ func (uc *UserRepo) CreateUser(ctx context.Context, user *biz.UserInfo) error {
 }
 
 // UpdateIdCard 修改身份信息
-func (uc *UserRepo) UpdateIdCard(ctx context.Context, req *biz.UpdateIdCardReq) error {
+func (uc *UserRepo) UpdateIdCard(_ context.Context, req *biz.UpdateIdCardReq) error {
 	var (
 		db  = uc.data.db.Model(&biz.UserInfo{})
 		err error
@@ -70,7 +71,7 @@ func (uc *UserRepo) UpdateIdCard(ctx context.Context, req *biz.UpdateIdCardReq) 
 }
 
 // UpdatePhone 修改手机号
-func (uc *UserRepo) UpdatePhone(ctx context.Context, req *biz.UpdatePhoneReq) error {
+func (uc *UserRepo) UpdatePhone(_ context.Context, req *biz.UpdatePhoneReq) error {
 	var (
 		db  = uc.data.db.Model(&biz.UserInfo{})
 		con int64
@@ -91,7 +92,7 @@ func (uc *UserRepo) UpdatePhone(ctx context.Context, req *biz.UpdatePhoneReq) er
 }
 
 // UpdatePassword 修改密码
-func (uc *UserRepo) UpdatePassword(ctx context.Context, req *biz.UpdatePasswordReq) error {
+func (uc *UserRepo) UpdatePassword(_ context.Context, req *biz.UpdatePasswordReq) error {
 	var (
 		db       = uc.data.db.Model(&biz.UserInfo{})
 		password string
@@ -112,7 +113,7 @@ func (uc *UserRepo) UpdatePassword(ctx context.Context, req *biz.UpdatePasswordR
 }
 
 // ForgetPassword 忘记密码
-func (uc *UserRepo) ForgetPassword(ctx context.Context, req *biz.ForgetPasswordReq) error {
+func (uc *UserRepo) ForgetPassword(_ context.Context, req *biz.ForgetPasswordReq) error {
 	var (
 		db  = uc.data.db.Model(&biz.UserInfo{})
 		err error
@@ -125,7 +126,7 @@ func (uc *UserRepo) ForgetPassword(ctx context.Context, req *biz.ForgetPasswordR
 }
 
 // UpdateNickname 修改昵称
-func (uc *UserRepo) UpdateNickname(ctx context.Context, req *biz.UpdateNicknameReq) error {
+func (uc *UserRepo) UpdateNickname(_ context.Context, req *biz.UpdateNicknameReq) error {
 	var (
 		db  = uc.data.db.Model(&biz.UserInfo{})
 		err error
@@ -138,7 +139,7 @@ func (uc *UserRepo) UpdateNickname(ctx context.Context, req *biz.UpdateNicknameR
 }
 
 // UpdateSex 修改性别
-func (uc *UserRepo) UpdateSex(ctx context.Context, req *biz.UpdateSexReq) error {
+func (uc *UserRepo) UpdateSex(_ context.Context, req *biz.UpdateSexReq) error {
 	var (
 		db  = uc.data.db.Model(&biz.UserInfo{})
 		err error
@@ -151,7 +152,7 @@ func (uc *UserRepo) UpdateSex(ctx context.Context, req *biz.UpdateSexReq) error 
 }
 
 // UpdateAvatarUrl 修改头像
-func (uc *UserRepo) UpdateAvatarUrl(ctx context.Context, req *biz.UpdateAvatarUrlReq) error {
+func (uc *UserRepo) UpdateAvatarUrl(_ context.Context, req *biz.UpdateAvatarUrlReq) error {
 	var (
 		db  = uc.data.db.Model(&biz.UserInfo{})
 		err error
@@ -164,7 +165,7 @@ func (uc *UserRepo) UpdateAvatarUrl(ctx context.Context, req *biz.UpdateAvatarUr
 }
 
 // UpdatePersonalSign 修改个性签名
-func (uc *UserRepo) UpdatePersonalSign(ctx context.Context, req *biz.UpdatePersonalSignReq) error {
+func (uc *UserRepo) UpdatePersonalSign(_ context.Context, req *biz.UpdatePersonalSignReq) error {
 	var (
 		db  = uc.data.db.Model(&biz.UserInfo{})
 		err error
@@ -177,7 +178,7 @@ func (uc *UserRepo) UpdatePersonalSign(ctx context.Context, req *biz.UpdatePerso
 }
 
 // UpdateIntroduce 修改个人介绍
-func (uc *UserRepo) UpdateIntroduce(ctx context.Context, req *biz.UpdateIntroduceReq) error {
+func (uc *UserRepo) UpdateIntroduce(_ context.Context, req *biz.UpdateIntroduceReq) error {
 	var (
 		db  = uc.data.db.Model(&biz.UserInfo{})
 		err error
@@ -190,7 +191,7 @@ func (uc *UserRepo) UpdateIntroduce(ctx context.Context, req *biz.UpdateIntroduc
 }
 
 // UpdateSnapCall 修改是否允许临时会话
-func (uc *UserRepo) UpdateSnapCall(ctx context.Context, req *biz.UpdateSnapCallReq) error {
+func (uc *UserRepo) UpdateSnapCall(_ context.Context, req *biz.UpdateSnapCallReq) error {
 	var (
 		db  = uc.data.db.Model(&biz.UserInfo{})
 		err error
@@ -203,7 +204,7 @@ func (uc *UserRepo) UpdateSnapCall(ctx context.Context, req *biz.UpdateSnapCallR
 }
 
 // UpdateFriendPass 修改添加好友方式
-func (uc *UserRepo) UpdateFriendPass(ctx context.Context, req *biz.UpdateFriendPassReq) error {
+func (uc *UserRepo) UpdateFriendPass(_ context.Context, req *biz.UpdateFriendPassReq) error {
 	var (
 		db  = uc.data.db.Model(&biz.UserInfo{})
 		err error
@@ -217,13 +218,13 @@ func (uc *UserRepo) UpdateFriendPass(ctx context.Context, req *biz.UpdateFriendP
 }
 
 // DeleteUser 删除账户
-func (uc *UserRepo) DeleteUser(ctx context.Context, req *biz.DeleteUserReq) error {
+func (uc *UserRepo) DeleteUser(_ context.Context, req *biz.DeleteUserReq) error {
 	//todo 删除账户并删除该用户其他的信息:群组,好友,频道...
 	panic("implement me")
 }
 
 // InfoUserBase 用户基本信息
-func (uc *UserRepo) InfoUserBase(ctx context.Context, id int64) (*biz.InfoUserBaseRsp, error) {
+func (uc *UserRepo) InfoUserBase(_ context.Context, id int64) (*biz.InfoUserBaseRsp, error) {
 	var (
 		db   = uc.data.db.Model(&biz.UserInfo{})
 		data = &biz.InfoUserBaseRsp{}
@@ -238,7 +239,7 @@ func (uc *UserRepo) InfoUserBase(ctx context.Context, id int64) (*biz.InfoUserBa
 }
 
 // InfoAccount 用户身份信息
-func (uc *UserRepo) InfoAccount(ctx context.Context, id int64) (*biz.InfoAccountRsp, error) {
+func (uc *UserRepo) InfoAccount(_ context.Context, id int64) (*biz.InfoAccountRsp, error) {
 	var (
 		db   = uc.data.db.Model(&biz.UserInfo{})
 		data = &biz.InfoAccountRsp{}
@@ -252,7 +253,7 @@ func (uc *UserRepo) InfoAccount(ctx context.Context, id int64) (*biz.InfoAccount
 }
 
 // InfoSnapCall 用户是否允许临时会话
-func (uc *UserRepo) InfoSnapCall(ctx context.Context, id int64) (*bool, error) {
+func (uc *UserRepo) InfoSnapCall(_ context.Context, id int64) (*bool, error) {
 	var (
 		db   = uc.data.db.Model(&biz.UserInfo{})
 		data *bool
@@ -266,7 +267,7 @@ func (uc *UserRepo) InfoSnapCall(ctx context.Context, id int64) (*bool, error) {
 }
 
 // InfoFriendPass 用户添加好友方式
-func (uc *UserRepo) InfoFriendPass(ctx context.Context, id int64) (*biz.InfoFriendPassRsp, error) {
+func (uc *UserRepo) InfoFriendPass(_ context.Context, id int64) (*biz.InfoFriendPassRsp, error) {
 	var (
 		db   = uc.data.db.Model(&biz.UserInfo{})
 		data = &biz.InfoFriendPassRsp{}

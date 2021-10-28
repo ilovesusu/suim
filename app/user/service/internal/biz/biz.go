@@ -7,13 +7,19 @@ import (
 )
 
 // ProviderSet is biz providers.
-var ProviderSet = wire.NewSet(NewUserUsecase)
+var ProviderSet = wire.NewSet(NewUserUsecase, NewFriendUsecase)
 
+// NewUserUsecase 新增用户使用方案
 func NewUserUsecase(repo UserRepo, logger log.Logger) *UserUsecase {
 	return &UserUsecase{repo: repo, log: log.NewHelper(logger)}
 }
 
-// UserRepo 用户
+// NewFriendUsecase 新增好友使用方案
+func NewFriendUsecase(repo FriendRepo, logger log.Logger) *FriendUsecase {
+	return &FriendUsecase{repo: repo, log: log.NewHelper(logger)}
+}
+
+// UserRepo 用户回购接口
 type UserRepo interface {
 	// CreateUser 创建用户
 	CreateUser(ctx context.Context, user *UserInfo) error
@@ -51,8 +57,24 @@ type UserRepo interface {
 	InfoFriendPass(ctx context.Context, id int64) (*InfoFriendPassRsp, error)
 }
 
-// UserUsecase 用户
+// UserUsecase 用户使用方案结构体
 type UserUsecase struct {
 	repo UserRepo
+	log  *log.Helper
+}
+
+// FriendRepo 好友回购接口
+type FriendRepo interface {
+	// ListUserFriend 好友列表
+	ListUserFriend(ctx context.Context, req *ListFriendReq) ([]ListUserFriendRsp, error)
+	// UpdateFriendRemark 修改好友备注
+	UpdateFriendRemark(ctx context.Context, req *UpdateFriendRemarkReq) error
+	// UpdateFriendStatus 修改好友状态
+	UpdateFriendStatus(ctx context.Context, req *UpdateFriendStatusReq) error
+}
+
+// FriendUsecase 好友使用方案结构体
+type FriendUsecase struct {
+	repo FriendRepo
 	log  *log.Helper
 }

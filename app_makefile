@@ -95,7 +95,7 @@ wire:
 
 .PHONY: api
 # generate api proto
-api: grpc http swagger errors
+api: grpc http swagger errors generate
 
 .PHONY: all
 # generate all

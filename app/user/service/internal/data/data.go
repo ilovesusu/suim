@@ -13,7 +13,7 @@ import (
 )
 
 // ProviderSet is data providers.
-var ProviderSet = wire.NewSet(NewData, NewUserRepo)
+var ProviderSet = wire.NewSet(NewData, NewUserRepo, NewFriendRepo)
 
 // Data .
 type Data struct {
@@ -59,9 +59,17 @@ func NewData(c *conf.Data, logger log.Logger) (*Data, func(), error) {
 	return &Data{db: db, rc: rc}, cleanup, nil
 }
 
-// NewUserRepo .
+// NewUserRepo 用户
 func NewUserRepo(data *Data, logger log.Logger) biz.UserRepo {
 	return &UserRepo{
+		data: data,
+		log:  log.NewHelper(logger),
+	}
+}
+
+// NewFriendRepo 好友
+func NewFriendRepo(data *Data, logger log.Logger) biz.FriendRepo {
+	return &FriendRepo{
 		data: data,
 		log:  log.NewHelper(logger),
 	}
