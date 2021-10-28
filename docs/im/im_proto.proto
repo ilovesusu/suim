@@ -33,7 +33,6 @@ enum  PackageType {
     PT_USER = 7;
     //房间操作
     PT_ROOM = 8;
-    //    PT_SUBSCRIBE_ROOM = 6; // 订阅房间
     //频道操作
     PT_CHANNEL = 9;
     //我的操作

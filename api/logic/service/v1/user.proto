@@ -1,7 +1,7 @@
 syntax = "proto3";
 
-import "third_party/google/protobuf/wrappers.proto";
-import "third_party/validate/validate.proto";
+import "google/protobuf/wrappers.proto";
+import "validate/validate.proto";
 
 //个人操作(上行data数据)
 message UserHandle{

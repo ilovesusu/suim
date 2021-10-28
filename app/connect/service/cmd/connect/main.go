@@ -6,6 +6,7 @@ import (
 	"github.com/go-kratos/kratos/v2/config"
 	"github.com/go-kratos/kratos/v2/config/file"
 	"github.com/go-kratos/kratos/v2/log"
+	"github.com/go-kratos/kratos/v2/registry"
 	"github.com/ilovesusu/suim/app/connect/service/internal/conf"
 	"github.com/ilovesusu/suim/app/connect/service/internal/server/tcp"
 	"github.com/ilovesusu/suim/app/connect/service/internal/server/websocket"
@@ -15,7 +16,7 @@ import (
 // go build -ldflags "-X main.Version=x.y.z"
 var (
 	// Name is the name of the compiled software.
-	Name string
+	Name = "connect"
 	// Version is the version of the compiled software.
 	Version string
 	// flagconf is the config flag.
@@ -28,8 +29,8 @@ func init() {
 	flag.StringVar(&flagconf, "conf", "../../configs", "config path, eg: -conf config.yaml")
 }
 
-//func newApp(logger log.Logger, tcpServer *tcp.TcpServer, webSocketServer *websocket.WebSocketServer, reg registry.Registrar) *kratos.App {
-func newApp(logger log.Logger, tcpServer *tcp.TcpServer, webSocketServer *websocket.WebSocketServer) *kratos.App {
+func newApp(logger log.Logger, tcpServer *tcp.TcpServer, webSocketServer *websocket.WebSocketServer, reg registry.Registrar) *kratos.App {
+	//func newApp(logger log.Logger, tcpServer *tcp.TcpServer, webSocketServer *websocket.WebSocketServer) *kratos.App {
 	return kratos.New(
 		kratos.ID(id),
 		kratos.Name(Name),
@@ -40,7 +41,7 @@ func newApp(logger log.Logger, tcpServer *tcp.TcpServer, webSocketServer *websoc
 			//tcpServer,
 			webSocketServer,
 		),
-		//kratos.Registrar(reg),
+		kratos.Registrar(reg),
 	)
 }
 

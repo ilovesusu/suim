@@ -4,13 +4,14 @@ import (
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
-	"github.com/ilovesusu/suim/api/user/service/v1"
+	"github.com/ilovesusu/suim/api/user/service/v1/friend"
+	"github.com/ilovesusu/suim/api/user/service/v1/user"
 	"github.com/ilovesusu/suim/app/user/service/internal/conf"
 	"github.com/ilovesusu/suim/app/user/service/internal/service"
 )
 
 // NewGRPCServer 创建有一个grpc服务
-func NewGRPCServer(c *conf.Server, user *service.UserService, logger log.Logger) *grpc.Server {
+func NewGRPCServer(c *conf.Server, us *service.UserService, fs *service.FriendService, logger log.Logger) *grpc.Server {
 	var opts = []grpc.ServerOption{
 		grpc.Middleware(
 			recovery.Recovery(),
@@ -26,7 +27,8 @@ func NewGRPCServer(c *conf.Server, user *service.UserService, logger log.Logger)
 		opts = append(opts, grpc.Timeout(c.Grpc.Timeout.AsDuration()))
 	}
 	srv := grpc.NewServer(opts...)
-	v1.RegisterUserServer(srv, user)
+	user.RegisterUserServer(srv, us)
+	friend.RegisterFriendServer(srv, fs)
 	_ = logger.Log(log.LevelInfo, "GRPC", "grpc init success!")
 	return srv
 }
