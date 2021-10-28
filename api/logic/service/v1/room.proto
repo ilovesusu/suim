@@ -1,5 +1,5 @@
 syntax = "proto3";
-
+option go_package = "suim/api/logic/service/v1;v1";
 //房间操作
 enum RoomHandleType {
     ROOM_UNKNOWN_HANDLE = 0;//未知

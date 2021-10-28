@@ -27,13 +27,12 @@ func initApp(confServer *conf.Server, confData *conf.Data, logger log.Logger) (*
 	userRepo := data.NewUserRepo(dataData, logger)
 	userUsecase := biz.NewUserUsecase(userRepo, logger)
 	userService := service.NewUserService(userUsecase, logger)
-	httpServer := server.NewHTTPServer(confServer, userService, logger)
 	friendRepo := data.NewFriendRepo(dataData, logger)
 	friendUsecase := biz.NewFriendUsecase(friendRepo, logger)
 	friendService := service.NewFriendService(friendUsecase, logger)
 	grpcServer := server.NewGRPCServer(confServer, userService, friendService, logger)
 	registrar := server.NewETCDServer(confServer, logger)
-	app := newApp(logger, httpServer, grpcServer, registrar)
+	app := newApp(logger, grpcServer, registrar)
 	return app, func() {
 		cleanup()
 	}, nil

@@ -1,5 +1,5 @@
 syntax = "proto3";
-
+option go_package = "suim/api/logic/service/v1;v1";
 import "google/protobuf/wrappers.proto";
 import "validate/validate.proto";
 

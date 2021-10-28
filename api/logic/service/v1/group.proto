@@ -1,4 +1,5 @@
 syntax = "proto3";
+option go_package = "suim/api/logic/service/v1;v1";
 
 //群组操作
 enum GroupHandleType {

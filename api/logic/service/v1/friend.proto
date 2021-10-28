@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+option go_package = "suim/api/logic/service/v1;v1";
+
 //性别枚举
 enum Sex{
     UNKNOWN_SEX = 0;//未知
@@ -25,7 +27,7 @@ enum FriendHandleType{
     UNKNOWN_FRIEND_TYPE = 0;//未知
     CREATE_FRIEND = 1;//添加好友
     UPDATE_FRIEND = 2;//修改好友信息
-    SEARCH_FRIEND = 3;//查找好友信息
+    SEARCH_FRIEND_INFO = 3;//查找好友信息
     DELETE_FRIEND = 4;//删除好友
     BLACK_FRIEND = 5;//拉黑好友
     LIST_FRIEND = 6;//好友列表
