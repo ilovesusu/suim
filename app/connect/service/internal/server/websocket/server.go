@@ -7,6 +7,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/gorilla/websocket"
 	"github.com/ilovesusu/suim/app/connect/service/internal/server/conn"
+	"github.com/ilovesusu/suim/app/connect/service/internal/service"
 	"io"
 	"net/http"
 	"net/url"
@@ -27,14 +28,31 @@ type WebSocketServer struct {
 	server *http.Server
 }
 
-func NewServer() *WebSocketServer {
+func NewServer(s *service.ShopAdmin) *WebSocketServer {
 	//gn.SetLogger(logger.Sugar)
 
 	srv := WebSocketServer{}
 	r := mux.NewRouter()
-	r.HandleFunc("/ws", wsHandler)
+	r.HandleFunc("/ws", _ShopAdmin_Login0_HTTP_Handler(s))
 	srv.server = &http.Server{Addr: "127.0.0.1:8887", Handler: r}
 	return &srv
+}
+
+func _ShopAdmin_Login0_HTTP_Handler(S *service.ShopAdmin) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		wsConn, err := upgrader.Upgrade(w, r, nil)
+		if err != nil {
+			//logger.Sugar.Error(err)
+			return
+		}
+
+		conn := &conn.Conn{
+			CoonType: conn.ConnTypeWS,
+			WS:       wsConn,
+			S:        S,
+		}
+		DoConn(conn)
+	}
 }
 
 func wsHandler(w http.ResponseWriter, r *http.Request) {
@@ -73,8 +91,8 @@ func DoConn(conn *conn.Conn) {
 
 // HandleReadErr 读取conn错误
 func HandleReadErr(conn *conn.Conn, err error) {
-	//logger.Logger.Debug("read tcp error：", zap.Int64("user_id", conn.UserId),
-	//	zap.Int64("device_id", conn.DeviceId), zap.Error(err))
+	//logger.Logger.Debug("read tcp error：", zap.Int64("user_id", connect.UserId),
+	//	zap.Int64("device_id", connect.DeviceId), zap.Error(err))
 	str := err.Error()
 	// 服务器主动关闭连接
 	if strings.HasSuffix(str, "use of closed network connection") {

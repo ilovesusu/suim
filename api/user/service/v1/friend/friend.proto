@@ -7,6 +7,8 @@ import "google/protobuf/wrappers.proto";
 
 //好友服务
 service Friend {
+    // todo 添加好友状态
+    rpc AddFriend(UpdateFriendStatusReq)returns(UpdateFriendStatusRsp){}
     //修改好友状态
     rpc UpdateFriendStatus(UpdateFriendStatusReq)returns(UpdateFriendStatusRsp){}
     //修改好友备注

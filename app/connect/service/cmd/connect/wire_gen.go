@@ -9,17 +9,24 @@ package main
 import (
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/log"
+	"github.com/ilovesusu/suim/app/connect/service/internal/biz"
 	"github.com/ilovesusu/suim/app/connect/service/internal/conf"
+	"github.com/ilovesusu/suim/app/connect/service/internal/data"
 	"github.com/ilovesusu/suim/app/connect/service/internal/server"
+	"github.com/ilovesusu/suim/app/connect/service/internal/service"
 )
 
 // Injectors from wire.go:
 
 // initApp init kratos application.
-func initApp(confServer *conf.Server, data *conf.Data, logger log.Logger) (*kratos.App, func(), error) {
-	tcpServer := server.NewTCPServer()
-	webSocketServer := server.NewWebSocketServer()
-	registrar := server.NewEtcdServer(confServer, logger)
+func initApp(confServer *conf.Server, confData *conf.Data, logger log.Logger) (*kratos.App, func(), error) {
+	discovery := data.NewDiscovery(confServer)
+	logicClient := data.NewLogicClient(discovery)
+	userUseCase := biz.NewUserUseCase(logger, logicClient)
+	shopAdmin := service.NewShopAdmin(userUseCase, logger)
+	tcpServer := server.NewTCPServer(shopAdmin)
+	webSocketServer := server.NewWebSocketServer(shopAdmin)
+	registrar := data.NewRegistrar(confServer)
 	app := newApp(logger, tcpServer, webSocketServer, registrar)
 	return app, func() {
 	}, nil

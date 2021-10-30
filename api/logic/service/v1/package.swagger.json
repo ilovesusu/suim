@@ -1,0 +1,89 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "v1/package.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "Logic"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {},
+  "definitions": {
+    "Output": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "$ref": "#/definitions/PackageType"
+        },
+        "requestId": {
+          "type": "string",
+          "format": "int64"
+        },
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "data": {
+          "type": "string",
+          "format": "byte"
+        }
+      },
+      "title": "下行数据"
+    },
+    "PackageType": {
+      "type": "string",
+      "enum": [
+        "PT_UNKNOWN",
+        "PT_SIGN_IN",
+        "PT_HEARTBEAT",
+        "PT_MESSAGE",
+        "PT_GROUP",
+        "PT_FRIEND",
+        "PT_ROOM",
+        "PT_CHANNEL",
+        "PT_MINE",
+        "PT_SEARCH",
+        "PT_NOTIFY"
+      ],
+      "default": "PT_UNKNOWN"
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    }
+  }
+}

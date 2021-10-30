@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/alberliu/gn"
 	"github.com/ilovesusu/suim/app/connect/service/internal/server/conn"
+	"github.com/ilovesusu/suim/app/connect/service/internal/service"
 	"net/url"
 	"time"
 )
@@ -13,14 +14,14 @@ type TcpServer struct {
 	server *gn.Server
 }
 
-func NewServer() *TcpServer {
+func NewServer(s *service.ShopAdmin) *TcpServer {
 	//gn.SetLogger(logger.Sugar)
 
 	srv := TcpServer{}
 
 	var err error
 	// todo address conf 中获取
-	srv.server, err = gn.NewServer("127.0.0.1:8888", &conn.Handler{},
+	srv.server, err = gn.NewServer("127.0.0.1:8888", &conn.Handler{s},
 		gn.NewHeaderLenDecoder(2),
 		gn.WithReadBufferLen(256),
 		gn.WithTimeout(5*time.Minute, 11*time.Minute),

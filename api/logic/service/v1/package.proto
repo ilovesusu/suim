@@ -1,5 +1,13 @@
 syntax = "proto3";
 option go_package = "suim/api/logic/service/v1;v1";
+
+
+//logic服务
+service Logic {
+    // todo 添加好友状态
+    rpc Call(Input)returns(Output){}
+}
+
 // 上行数据
 message Input {
     string version = 1; //版本

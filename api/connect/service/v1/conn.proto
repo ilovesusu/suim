@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+import "api/logic/service/v1/message.proto";
+
+option go_package = "suim/api/connect/service/v1;v1";
+
+service Conn {
+    //  消息投递
+    rpc DeliverMessage (DeliverMessageReq) returns (Empty);
+}
+
+message DeliverMessageReq {
+    int64 device_id = 1; // 设备id
+    MessageSend message_send = 2; // 数据
+}
+
+message MessageSend {
+    Message message = 1;
+}
+
+message Empty {
+}

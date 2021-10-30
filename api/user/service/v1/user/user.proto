@@ -51,19 +51,19 @@ service User {
 }
 
 //性别枚举
-enum Sex{
-    UNKNOWN_SEX = 0;//未知
-    SECRET = 1;//保密
-    BOY = 2;//男
-    GIRL = 3;//女
-}
+//enum Sex{
+//    UNKNOWN_SEX = 0;//未知
+//    SECRET = 1;//保密
+//    BOY = 2;//男
+//    GIRL = 3;//女
+//}
 //添加好友方式
 enum FriendPassType{
     UNKNOWN_FRIEND_PASS_TYPE = 0;//未知
     PASS = 1;//直接通过
     VERIFY = 2;//需要验证
     QUESTIONS_AND_ANSWERS = 3;//问题答案验证
-    REFUSE = 4;//拒绝加好友
+//    REFUSE = 4;//拒绝加好友
 }
 
 //hello请求参数

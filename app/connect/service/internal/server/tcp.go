@@ -1,8 +1,11 @@
 package server
 
-import "github.com/ilovesusu/suim/app/connect/service/internal/server/tcp"
+import (
+	"github.com/ilovesusu/suim/app/connect/service/internal/server/tcp"
+	"github.com/ilovesusu/suim/app/connect/service/internal/service"
+)
 
-func NewTCPServer() *tcp.TcpServer {
-	srv := tcp.NewServer()
+func NewTCPServer(s *service.ShopAdmin) *tcp.TcpServer {
+	srv := tcp.NewServer(s)
 	return srv
 }

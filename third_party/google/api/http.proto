@@ -50,7 +50,7 @@ message Http {
 // [Cloud Endpoints](https://cloud.google.com/endpoints), [gRPC
 // Gateway](https://github.com/grpc-ecosystem/grpc-gateway),
 // and [Envoy](https://github.com/envoyproxy/envoy) proxy support this feature
-// and use it for large scale production services.
+// and use it for large scale production service.
 //
 // `HttpRule` defines the schema of the gRPC/REST mapping. The mapping specifies
 // how different portions of the gRPC request message are mapped to the URL
@@ -271,7 +271,7 @@ message Http {
 // transcoding in your service config YAML files. You do this by specifying a
 // `HttpRule` that maps the gRPC method to a REST endpoint, achieving the same
 // effect as the proto annotation. This can be particularly useful if you
-// have a proto that is reused in multiple services. Note that any transcoding
+// have a proto that is reused in multiple service. Note that any transcoding
 // specified in the service config will override any matching transcoding
 // configuration in the proto.
 //
@@ -339,7 +339,7 @@ message HttpRule {
         // The custom pattern is used for specifying an HTTP method that is not
         // included in the `pattern` field, such as HEAD, or "*" to leave the
         // HTTP method unspecified for this rule. The wild-card rule is useful
-        // for services that provide content to Web (HTML) clients.
+        // for service that provide content to Web (HTML) clients.
         CustomHttpPattern custom = 8;
     }
 
