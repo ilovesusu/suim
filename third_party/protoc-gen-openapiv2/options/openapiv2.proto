@@ -93,7 +93,7 @@ message Swagger {
     // Individual operations can override this definition.
     repeated SecurityRequirement security = 12;
     // field 13 is reserved for 'tags', which are supposed to be exposed as and
-    // customizable as proto services. TODO(ivucica): add processing of proto
+    // customizable as proto service. TODO(ivucica): add processing of proto
     // service objects into OpenAPI v2 Tag objects.
     reserved 13;
     // Additional external documentation.

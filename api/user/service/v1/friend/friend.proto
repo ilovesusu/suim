@@ -1,0 +1,62 @@
+syntax = "proto3";
+
+option go_package = "suim/api/user/service/v1/friend;friend";
+
+import "validate/validate.proto";
+import "google/protobuf/wrappers.proto";
+
+//好友服务
+service Friend {
+    // todo 添加好友状态
+    rpc AddFriend(UpdateFriendStatusReq)returns(UpdateFriendStatusRsp){}
+    //修改好友状态
+    rpc UpdateFriendStatus(UpdateFriendStatusReq)returns(UpdateFriendStatusRsp){}
+    //修改好友备注
+    rpc UpdateFriendRemark(UpdateFriendRemarkReq)returns(UpdateFriendRemarkRsp){}
+    //列表
+    rpc ListUserFriend(ListUserFriendReq)returns(ListUserFriendRsp){}
+}
+//好友状态枚举
+enum FriendStatus{
+    UNKNOWN_FRIEND_STATUS = 0;//未知
+    APPLY_FRIEND = 1;//申请
+    PASS_FRIEND = 2;//通过
+    REFUSE_FRIEND = 3;//拒绝
+    BLACK_FRIEND = 4;//拉黑
+    DELETE_FRIEND = 5;//删除
+}
+//修改好友状态请求参数
+message UpdateFriendStatusReq{
+    int64 user_id = 1 [(validate.rules).int64 = {gt: 0}];//用户id
+    int64 friend_id = 2 [(validate.rules).int64 = {gt: 0}];//好友id
+    int32 friend_status = 3 [(validate.rules).int32 = {in: [1, 2, 3, 4, 5]}];//好友状态
+    google.protobuf.StringValue verify_message = 4 [(validate.rules).string = {min_len: 1,ignore_empty: true}];//验证消息--申请好友时填写
+}
+//修改好友状态响应参数
+message UpdateFriendStatusRsp{}
+//修改好友备注请求参数
+message UpdateFriendRemarkReq{
+    int64 user_id = 1 [(validate.rules).int64 = {gt: 0}];//用户id
+    int64 friend_id = 2 [(validate.rules).int64 = {gt: 0}];//好友id
+    string friend_remark = 3 [(validate.rules).string = {min_len: 1,ignore_empty: true}];//好友备注
+}
+//修改好友备注响应参数
+message UpdateFriendRemarkRsp{}
+//列表请求参数
+message ListUserFriendReq{
+    int64 user_id = 1 [(validate.rules).int64 = {gt: 0}];//用户id
+    int32 friend_status = 2 [(validate.rules).int32 = {in: [1, 2, 3, 4]}];
+}
+//列表响应参数
+message ListUserFriendRsp{
+    message List{
+        int64 id = 1;//好友id
+        string nickname = 2;//好友昵称
+        int32 sex = 3;//好友性别
+        google.protobuf.StringValue avatar_url = 4;//好友头像
+        google.protobuf.StringValue personal_sign = 5;//好友个性签名
+        google.protobuf.StringValue remark = 6;//好友备注
+    }
+    repeated List list = 1;//好友列表
+}
+

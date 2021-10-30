@@ -2,151 +2,128 @@ package biz
 
 import (
 	"context"
-	"github.com/go-kratos/kratos/v2/log"
+	v1 "github.com/ilovesusu/suim/api/user/service/v1"
+	"github.com/ilovesusu/suim/api/user/service/v1/user"
+	"strings"
 )
 
 // UserInfo 用户信息
 type UserInfo struct {
 	BaseModel
 	Number            string  `gorm:"index;not null;size:50;comment:用户号码"`
-	Phone             *string `gorm:"index;not null;size:20;comment:电话号码"`
-	Password          *string `gorm:"not null;size:255;comment:密码"`
+	Phone             string  `gorm:"index;not null;size:20;comment:电话号码"`
+	Password          string  `gorm:"not null;size:255;comment:密码"`
 	Name              *string `gorm:"index;size:50;comment:姓名"`
 	IdCard            *string `gorm:"size:20;comment:身份证号"`
-	Nickname          *string `gorm:"index;not null;size:100;comment:昵称"`
-	Sex               *int32  `gorm:"index;not null;size:4;comment:性别(1-保密,2-男,3-女)"`
+	Nickname          string  `gorm:"index;not null;size:100;comment:昵称"`
+	Sex               int32   `gorm:"index;not null;size:4;comment:性别(1-保密,2-男,3-女)"`
 	AvatarUrl         *string `gorm:"size:255;comment:头像地址链接"`
+	PersonalSign      *string `gorm:"size:50;comment:个性签名"`
 	Introduce         *string `gorm:"size:255;comment:个人介绍"`
-	SnapCall          *bool   `gorm:"not null;comment:是否允许临时会话"`
-	AddFriendType     *int32  `gorm:"not null;comment:添加好友方式(1-直接通过,2-需要验证,3-回答问题通过验证,4-拒绝加好友)"`
+	SnapCall          bool    `gorm:"not null;comment:是否允许临时会话"`
+	FriendPassType    int32   `gorm:"not null;comment:添加好友方式(1-直接通过,2-需要验证,3-回答问题通过验证,4-拒绝加好友)"`
 	FriendPassProblem *string `gorm:"size:255;comment:问题通过好友请求问题"`
 	FriendPassAnswer  *string `gorm:"size:255;comment:问题通过好友答案"`
 }
 
-// UserDevice 用户设备
-type UserDevice struct {
-	BaseModel
-	Uid           int64   `gorm:"index;not null;comment:用户id"`
-	DeviceType    *int32  `gorm:"not null;comment:用户设备类型(1-Android,2-IOS,3-Windows,4-MacOS,5-Linux,6-Web"`
-	DeviceBrand   *string `gorm:"size:50;comment:设备品牌"`
-	DeviceModel   *string `gorm:"size:50;comment:设备型号"`
-	DeviceVersion *string `gorm:"size:50;comment:设备系统版本"`
-	SdkVersion    *string `gorm:"size:30;comment:软件版本"`
-	ConnStatus    *bool   `gorm:"index;not null;comment:设备是否在线"`
-	ServerAddr    *string `gorm:"index;not null;comment:连接服务器地址"`
+// CreateUser 创建用户
+func (u *UserUsecase) CreateUser(ctx context.Context, req *UserInfo) error {
+	if req.FriendPassType == int32(user.FriendPassType_QUESTIONS_AND_ANSWERS) {
+		if req.FriendPassProblem == nil || (req.FriendPassProblem != nil && len(strings.TrimSpace(*req.FriendPassProblem)) == 0) {
+			return v1.ErrorQuestionsNotNull("通过问题添加好友,问题不能为空")
+		}
+		if req.FriendPassAnswer == nil || (req.FriendPassAnswer != nil && len(strings.TrimSpace(*req.FriendPassAnswer)) == 0) {
+			return v1.ErrorAnswersNotNull("通过问题添加好友,答案不能为空")
+		}
+	}
+	return u.repo.CreateUser(ctx, req)
 }
 
-// UserFriend 用户好友
-type UserFriend struct {
-	BaseModel
-	Uid          int64   `gorm:"index;not null;comment:用户id"`
-	Fid          int64   `gorm:"index;not null;comment:好友id"`
-	FriendStatus *int32  `gorm:"index;not null;comment:好友状态(1-申请,2-同意,3-拒绝,4-拉黑,5-删除)"`
-	FriendRemark *string `gorm:"comment:好友备注"`
+// UpdateAccount 修改身份信息
+func (u *UserUsecase) UpdateAccount(ctx context.Context, req *UpdateIdCardReq) error {
+	return u.repo.UpdateIdCard(ctx, req)
 }
 
-// UserGroup 用户群组
-type UserGroup struct {
-	BaseModel
-	Uid          int64  `gorm:"index;not null;comment:用户id"`
-	Gid          int64  `gorm:"index;not null;comment:群组id"`
-	MemberType   *int32 `gorm:"index;not null;comment:成员类型(1-群主,2-管理员,3-普通成员)"`
-	MemberStatus *int32 `gorm:"index;not null;comment:成员状态(1-正常,2-禁言,3-移除)"`
+// UpdatePhone 修改电话号码
+func (u *UserUsecase) UpdatePhone(ctx context.Context, req *UpdatePhoneReq) error {
+	return u.repo.UpdatePhone(ctx, req)
 }
 
-// UserChannel 用户频道
-type UserChannel struct {
-	BaseModel
-	Uid             int64  `gorm:"index;not null;comment:用户id"`
-	Cid             int64  `gorm:"index;not null;comment:频道id"`
-	AttentionStatus *bool  `gorm:"index;not null;comment:关注状态"`
-	MsgPushStatus   *int32 `gorm:"index;not null;comment:消息推送状态(1-正常接收消息推送,2-静默接收消息推送,3-不接收消息推送)"`
+// UpdatePassword 修改密码
+func (u *UserUsecase) UpdatePassword(ctx context.Context, req *UpdatePasswordReq) error {
+	return u.repo.UpdatePassword(ctx, req)
 }
 
-// GroupInfo 群组信息
-type GroupInfo struct {
-	BaseModel
-	Number      string  `gorm:"not null;index;size:50;comment:群组号"`
-	Name        *string `gorm:"not null;index;size:50;comment:群组名称"`
-	AvatarUrl   *string `gorm:"not null;size:255;comment:群组头像链接"`
-	Introduce   *string `gorm:"size:255;comment:群组简介"`
-	MemberNum   int32   `gorm:"not null;comment:群组成员人数"`
-	GroupStatus *int32  `gorm:"index;not null;comment:群组状态(1-正常,2-解散)"`
+// ForgetPassword 忘记密码
+func (u *UserUsecase) ForgetPassword(ctx context.Context, req *ForgetPasswordReq) error {
+	//todo 通过nats验证发送的验证码
+	return u.repo.ForgetPassword(ctx, req)
 }
 
-// TagInfo 标签信息
-type TagInfo struct {
-	BaseModel
-	Name     *string `gorm:"index;not null;size:50;comment:标签名称"`
-	OtherUse *bool   `gorm:"index;not null;comment:是否可被其他人使用"`
+// UpdateNickname 修改昵称
+func (u *UserUsecase) UpdateNickname(ctx context.Context, req *UpdateNicknameReq) error {
+	return u.repo.UpdateNickname(ctx, req)
 }
 
-// GroupTag 群组标签
-type GroupTag struct {
-	BaseModel
-	Gid int64 `gorm:"index;not null;comment:群组id"`
-	Tid int64 `gorm:"index;not null;comment:标签id"`
+// UpdateSex 修改性别
+func (u *UserUsecase) UpdateSex(ctx context.Context, req *UpdateSexReq) error {
+	return u.repo.UpdateSex(ctx, req)
 }
 
-// ChannelInfo 频道信息
-type ChannelInfo struct {
-	BaseModel
-	Number        string  `gorm:"index;size:50;not null;comment:频道号"`
-	Name          *string `gorm:"index;size:50;not null;comment:频道名称"`
-	AvatarUrl     *string `gorm:"not null;size:255;comment:频道头像链接"`
-	Introduce     *string `gorm:"size:255;comment:频道简介"`
-	ChannelType   *int32  `gorm:"index;not null;comment:频道类型(1-科技,2-知识,3-美食,4-技术,5-网络...)"`
-	ChannelStatus *int32  `gorm:"index;not null;comment:频道状态(1-正常,2-关闭...)"`
-	AttentionNum  int32   `gorm:"index;not null;comment:关注数量"`
-	MsgNum        int32   `gorm:"not null;comment:文章数量"`
+// UpdateAvatarUrl 修改头像
+func (u *UserUsecase) UpdateAvatarUrl(ctx context.Context, req *UpdateAvatarUrlReq) error {
+	return u.repo.UpdateAvatarUrl(ctx, req)
 }
 
-// MigratorTable 此数组专门存储结构体用来迁移表使用
-var MigratorTable = []interface{}{
-	&UserInfo{},    //用户信息表
-	&UserDevice{},  //用户设备表
-	&UserFriend{},  //用户好友表
-	&UserGroup{},   //用户群组表
-	&UserChannel{}, //用户频道表
-	&GroupInfo{},   //群组信息表
-	&ChannelInfo{}, //频道信息表
-	&TagInfo{},     //标签信息表
-	&GroupTag{},    //群组标签表
+// UpdatePersonalSign 修改个性签名
+func (u *UserUsecase) UpdatePersonalSign(ctx context.Context, req *UpdatePersonalSignReq) error {
+	return u.repo.UpdatePersonalSign(ctx, req)
 }
 
-type UserRepo interface {
-	CreateUser(context.Context, *UserInfo) error
-	UpdateUser(context.Context, *UserInfo) error
-	DeleteUser(context.Context, *UserInfo) error
-	ListUser(context.Context, *UserFriend) ([]FriendList, error)
-	InfoUser(context.Context, *UserInfo) (*UserInfo, error)
+// UpdateIntroduce 修改自我介绍
+func (u *UserUsecase) UpdateIntroduce(ctx context.Context, req *UpdateIntroduceReq) error {
+	return u.repo.UpdateIntroduce(ctx, req)
 }
 
-type UserUsecase struct {
-	repo UserRepo
-	log  *log.Helper
+// UpdateSnapCall 修改是否允许临时会话
+func (u *UserUsecase) UpdateSnapCall(ctx context.Context, req *UpdateSnapCallReq) error {
+	return u.repo.UpdateSnapCall(ctx, req)
 }
 
-func NewUserUsecase(repo UserRepo, logger log.Logger) *UserUsecase {
-	return &UserUsecase{repo: repo, log: log.NewHelper(logger)}
+// UpdateFriendPass 修改添加好友方式
+func (u *UserUsecase) UpdateFriendPass(ctx context.Context, req *UpdateFriendPassReq) error {
+	if req.FriendPassType == int32(user.FriendPassType_QUESTIONS_AND_ANSWERS) {
+		if req.FriendPassProblem == nil || (req.FriendPassProblem != nil && len(strings.TrimSpace(*req.FriendPassProblem)) == 0) {
+			return v1.ErrorQuestionsNotNull("通过问题添加好友,问题不能为空")
+		}
+		if req.FriendPassAnswer == nil || (req.FriendPassAnswer != nil && len(strings.TrimSpace(*req.FriendPassAnswer)) == 0) {
+			return v1.ErrorAnswersNotNull("通过问题添加好友,答案不能为空")
+		}
+	}
+	return u.repo.UpdateFriendPass(ctx, req)
 }
 
-func (u *UserUsecase) UserCreate(ctx context.Context, user *UserInfo) error {
-	return u.repo.CreateUser(ctx, user)
+// DeleteUser 删除账户
+func (u *UserUsecase) DeleteUser(ctx context.Context, req *DeleteUserReq) error {
+	return u.repo.DeleteUser(ctx, req)
 }
 
-func (u *UserUsecase) UserUpdate(ctx context.Context, user *UserInfo) error {
-	return u.repo.UpdateUser(ctx, user)
+// InfoUserBase 查看基本信息
+func (u *UserUsecase) InfoUserBase(ctx context.Context, id int64) (*InfoUserBaseRsp, error) {
+	return u.repo.InfoUserBase(ctx, id)
 }
 
-func (u *UserUsecase) UserDelete(ctx context.Context, user *UserInfo) error {
-	return u.repo.DeleteUser(ctx, user)
+// InfoAccount 查看身份信息
+func (u *UserUsecase) InfoAccount(ctx context.Context, id int64) (*InfoAccountRsp, error) {
+	return u.repo.InfoAccount(ctx, id)
 }
 
-func (u *UserUsecase) UserList(ctx context.Context, user *UserFriend) ([]FriendList, error) {
-	return u.repo.ListUser(ctx, user)
+// InfoSnapCall 查看是否允许临时会话
+func (u *UserUsecase) InfoSnapCall(ctx context.Context, id int64) (*bool, error) {
+	return u.repo.InfoSnapCall(ctx, id)
 }
 
-func (u *UserUsecase) UserInfo(ctx context.Context, user *UserInfo) (*UserInfo, error) {
-	return u.repo.InfoUser(ctx, user)
+// InfoFriendPass 查看添加好友方式
+func (u *UserUsecase) InfoFriendPass(ctx context.Context, id int64) (*InfoFriendPassRsp, error) {
+	return u.repo.InfoFriendPass(ctx, id)
 }

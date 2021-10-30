@@ -2,122 +2,223 @@ package service
 
 import (
 	"context"
-	"github.com/go-kratos/kratos/v2/log"
-	v1 "github.com/ilovesusu/suim/api/user/service/v1"
+	"github.com/ilovesusu/suim/api/user/service/v1/user"
 	"github.com/ilovesusu/suim/app/user/service/internal/biz"
 	"github.com/ilovesusu/suim/pkg"
 )
 
-// UserService is a greeter service.
-type UserService struct {
-	v1.UnimplementedUserServer
-
-	uc  *biz.UserUsecase
-	log *log.Helper
+// Hello hello测试
+func (us *UserService) Hello(ctx context.Context, req *user.HelloReq) (*user.HelloRsp, error) {
+	return &user.HelloRsp{Hello: "你好!" + req.Name}, nil
 }
 
-// NewUserService 创建一个用户服务
-func NewUserService(uc *biz.UserUsecase, logger log.Logger) *UserService {
-	return &UserService{uc: uc, log: log.NewHelper(logger)}
-}
-
-func (us *UserService) Hello(ctx context.Context, req *v1.HelloReq) (*v1.HelloRsp, error) {
-	return &v1.HelloRsp{Hello: "你好!" + req.Name}, nil
-}
-
-// UserCreate 添加用户
-func (us *UserService) UserCreate(ctx context.Context, req *v1.UserCreateReq) (*v1.UserCreateRsp, error) {
-	user := &biz.UserInfo{
-		Phone:             &req.Phone,
-		Password:          &req.Password,
-		Name:              &req.Name,
-		IdCard:            pkg.GetFromStringValue(req.IdCard),
-		Nickname:          &req.Nickname,
-		Sex:               &req.Sex,
-		AvatarUrl:         pkg.GetFromStringValue(req.AvatarUrl),
-		Introduce:         pkg.GetFromStringValue(req.Introduce),
-		SnapCall:          &req.SnapCall,
-		AddFriendType:     &req.AddFriendType,
-		FriendPassProblem: pkg.GetFromStringValue(req.FriendPassProblem),
-		FriendPassAnswer:  pkg.GetFromStringValue(req.FriendPassAnswer),
-	}
-	if err := us.uc.UserCreate(ctx, user); err != nil {
-		return nil, err
-	}
-	return &v1.UserCreateRsp{}, nil
-}
-
-// UserUpdate 修改用户信息
-func (us *UserService) UserUpdate(ctx context.Context, req *v1.UserUpdateReq) (*v1.UserUpdateRsp, error) {
-	user := biz.UserInfo{
-		BaseModel:         biz.BaseModel{Id: req.Id},
-		Number:            "",
-		Phone:             pkg.GetFromStringValue(req.Phone),
-		Password:          pkg.GetFromStringValue(req.Password),
+// CreateUser 创建用户
+func (us *UserService) CreateUser(ctx context.Context, req *user.CreateUserReq) (*user.CreateUserRsp, error) {
+	info := &biz.UserInfo{
+		Phone:             req.Phone,
+		Password:          req.Password,
 		Name:              pkg.GetFromStringValue(req.Name),
 		IdCard:            pkg.GetFromStringValue(req.IdCard),
-		Nickname:          pkg.GetFromStringValue(req.Nickname),
-		Sex:               pkg.GetFromInt32Value(req.Sex),
+		Nickname:          req.Nickname,
+		Sex:               req.Sex,
 		AvatarUrl:         pkg.GetFromStringValue(req.AvatarUrl),
+		PersonalSign:      pkg.GetFromStringValue(req.PersonalSign),
 		Introduce:         pkg.GetFromStringValue(req.Introduce),
-		SnapCall:          pkg.GetFromBoolValue(req.SnapCall),
-		AddFriendType:     pkg.GetFromInt32Value(req.AddFriendType),
+		SnapCall:          req.SnapCall,
+		FriendPassType:    req.AddFriendType,
 		FriendPassProblem: pkg.GetFromStringValue(req.FriendPassProblem),
 		FriendPassAnswer:  pkg.GetFromStringValue(req.FriendPassAnswer),
 	}
-	if err := us.uc.UserUpdate(ctx, &user); err != nil {
+	if err := us.uc.CreateUser(ctx, info); err != nil {
 		return nil, err
 	}
-	return &v1.UserUpdateRsp{}, nil
+	return nil, nil
 }
 
-// UserDelete 注销用户
-func (us *UserService) UserDelete(ctx context.Context, req *v1.UserDeleteReq) (*v1.UserDeleteRsp, error) {
-	if err := us.uc.UserDelete(ctx, &biz.UserInfo{BaseModel: biz.BaseModel{Id: req.Id}}); err != nil {
+// UpdateIdCard 修改身份信息
+func (us *UserService) UpdateIdCard(ctx context.Context, req *user.UpdateIdCardReq) (*user.UpdateIdCardRsp, error) {
+	if err := us.uc.UpdateAccount(ctx, &biz.UpdateIdCardReq{
+		Id:     req.Id,
+		Name:   req.Name,
+		IdCard: req.IdCard,
+	}); err != nil {
 		return nil, err
 	}
-	return &v1.UserDeleteRsp{}, nil
+	return nil, nil
 }
 
-// UserInfo 用户信息
-func (us *UserService) UserInfo(ctx context.Context, req *v1.UserInfoReq) (*v1.UserInfoRsp, error) {
-	info, err := us.uc.UserInfo(ctx, &biz.UserInfo{BaseModel: biz.BaseModel{Id: req.Id}})
+// UpdatePhone 修改电话号码
+func (us *UserService) UpdatePhone(ctx context.Context, req *user.UpdatePhoneReq) (*user.UpdatePhoneRsp, error) {
+	if err := us.uc.UpdatePhone(ctx, &biz.UpdatePhoneReq{
+		Id:    req.Id,
+		Phone: req.Phone,
+	}); err != nil {
+		return nil, err
+	}
+	return nil, nil
+}
+
+// UpdatePassword 修改密码
+func (us *UserService) UpdatePassword(ctx context.Context, req *user.UpdatePasswordReq) (*user.UpdatePasswordRsp, error) {
+	if err := us.uc.UpdatePassword(ctx, &biz.UpdatePasswordReq{
+		Id:          req.Id,
+		OldPassword: req.OldPassword,
+		NewPassword: req.NewPassword,
+	}); err != nil {
+		return nil, err
+	}
+	return nil, nil
+}
+
+// ForgetPassword 忘记密码
+func (us *UserService) ForgetPassword(ctx context.Context, req *user.ForgetPasswordReq) (*user.ForgetPasswordRsp, error) {
+	if err := us.uc.ForgetPassword(ctx, &biz.ForgetPasswordReq{
+		Phone:    req.Phone,
+		Password: req.Password,
+		Code:     req.Code,
+	}); err != nil {
+		return nil, err
+	}
+	return nil, nil
+}
+
+// UpdateNickname 修改昵称
+func (us *UserService) UpdateNickname(ctx context.Context, req *user.UpdateNicknameReq) (*user.UpdateNicknameRsp, error) {
+	if err := us.uc.UpdateNickname(ctx, &biz.UpdateNicknameReq{
+		Id:       req.Id,
+		Nickname: req.Nickname,
+	}); err != nil {
+		return nil, err
+	}
+	return nil, nil
+}
+
+// UpdateSex 修改性别
+func (us *UserService) UpdateSex(ctx context.Context, req *user.UpdateSexReq) (*user.UpdateSexRsp, error) {
+	if err := us.uc.UpdateSex(ctx, &biz.UpdateSexReq{
+		Id:  req.Id,
+		Sex: req.Sex,
+	}); err != nil {
+		return nil, err
+	}
+	return nil, nil
+}
+
+// UpdateAvatarUrl 修改头像
+func (us *UserService) UpdateAvatarUrl(ctx context.Context, req *user.UpdateAvatarUrlReq) (*user.UpdateAvatarUrlRsp, error) {
+	if err := us.uc.UpdateAvatarUrl(ctx, &biz.UpdateAvatarUrlReq{
+		Id:        req.Id,
+		AvatarUrl: req.AvatarUrl,
+	}); err != nil {
+		return nil, err
+	}
+	return nil, nil
+}
+
+// UpdatePersonalSign 修改个性签名
+func (us *UserService) UpdatePersonalSign(ctx context.Context, req *user.UpdatePersonalSignReq) (*user.UpdatePersonalSignRsp, error) {
+	if err := us.uc.UpdatePersonalSign(ctx, &biz.UpdatePersonalSignReq{
+		Id:           req.Id,
+		PersonalSign: req.PersonalSign,
+	}); err != nil {
+		return nil, err
+	}
+	return nil, nil
+}
+
+// UpdateIntroduce 修改个人介绍
+func (us *UserService) UpdateIntroduce(ctx context.Context, req *user.UpdateIntroduceReq) (*user.UpdateIntroduceRsp, error) {
+	if err := us.uc.UpdateIntroduce(ctx, &biz.UpdateIntroduceReq{
+		Id:        req.Id,
+		Introduce: req.Introduce,
+	}); err != nil {
+		return nil, err
+	}
+	return nil, nil
+}
+
+// UpdateSnapCall 修改是否允许临时会话
+func (us *UserService) UpdateSnapCall(ctx context.Context, req *user.UpdateSnapCallReq) (*user.UpdateSnapCallRsp, error) {
+	if err := us.uc.UpdateSnapCall(ctx, &biz.UpdateSnapCallReq{
+		Id:       req.Id,
+		SnapCall: req.SnapCall,
+	}); err != nil {
+		return nil, err
+	}
+	return nil, nil
+}
+
+// UpdateFriendPass 修改用户添加好友方式
+func (us *UserService) UpdateFriendPass(ctx context.Context, req *user.UpdateFriendPassReq) (*user.UpdateFriendPassRsp, error) {
+	if err := us.uc.UpdateFriendPass(ctx, &biz.UpdateFriendPassReq{
+		Id:                req.Id,
+		FriendPassType:    req.AddFriendType,
+		FriendPassProblem: pkg.GetFromStringValue(req.FriendPassProblem),
+		FriendPassAnswer:  pkg.GetFromStringValue(req.FriendPassAnswer),
+	}); err != nil {
+		return nil, err
+	}
+	return nil, nil
+}
+
+// DeleteUser 删除帐号
+func (us *UserService) DeleteUser(ctx context.Context, req *user.DeleteUserReq) (*user.DeleteUserRsp, error) {
+	if err := us.uc.DeleteUser(ctx, &biz.DeleteUserReq{
+		Id:       req.Id,
+		Password: req.Password,
+	}); err != nil {
+		return nil, err
+	}
+	return nil, nil
+}
+
+// InfoUserBase 查询用户基本信息
+func (us *UserService) InfoUserBase(ctx context.Context, req *user.InfoUserBaseReq) (*user.InfoUserBaseRsp, error) {
+	info, err := us.uc.InfoUserBase(ctx, req.Id)
 	if err != nil {
 		return nil, err
 	}
-	var rsp = &v1.UserInfoRsp{
-		Id:                info.Id,
-		Name:              *info.Name,
-		Phone:             *info.Phone,
-		Nickname:          *info.Nickname,
-		Sex:               *info.Sex,
-		AvatarUrl:         pkg.CreateStringValuePtr(info.AvatarUrl),
-		Introduce:         pkg.CreateStringValuePtr(info.Introduce),
-		SnapCall:          *info.SnapCall,
-		AddFriendType:     *info.AddFriendType,
+	return &user.InfoUserBaseRsp{
+		Number:       info.Number,
+		Nickname:     info.Nickname,
+		Sex:          info.Sex,
+		AvatarUrl:    pkg.CreateStringValuePtr(info.AvatarUrl),
+		PersonalSign: pkg.CreateStringValuePtr(info.PersonalSign),
+		Introduce:    pkg.CreateStringValuePtr(info.Introduce),
+	}, nil
+}
+
+// InfoAccount 查询用户身份信息
+func (us *UserService) InfoAccount(ctx context.Context, req *user.InfoAccountReq) (*user.InfoAccountRsp, error) {
+	info, err := us.uc.InfoAccount(ctx, req.Id)
+	if err != nil {
+		return nil, err
+	}
+	return &user.InfoAccountRsp{
+		Phone:  info.Phone,
+		Name:   pkg.CreateStringValuePtr(info.Name),
+		IdCard: pkg.CreateStringValuePtr(info.IdCard),
+	}, nil
+}
+
+// InfoSnapCall 查询用户是否允许临时会话
+func (us *UserService) InfoSnapCall(ctx context.Context, req *user.InfoSnapCallReq) (*user.InfoSnapCallRsp, error) {
+	info, err := us.uc.InfoSnapCall(ctx, req.Id)
+	if err != nil {
+		return nil, err
+	}
+	return &user.InfoSnapCallRsp{SnapCall: *info}, nil
+}
+
+// InfoFriendPass 查询用户添加好友方式
+func (us *UserService) InfoFriendPass(ctx context.Context, req *user.InfoFriendPassReq) (*user.InfoFriendPassRsp, error) {
+	info, err := us.uc.InfoFriendPass(ctx, req.Id)
+	if err != nil {
+		return nil, err
+	}
+	return &user.InfoFriendPassRsp{
+		FriendPassType:    info.FriendPassType,
 		FriendPassProblem: pkg.CreateStringValuePtr(info.FriendPassProblem),
 		FriendPassAnswer:  pkg.CreateStringValuePtr(info.FriendPassAnswer),
-	}
-	return rsp, nil
-}
-
-// UserList 用户好友列表
-func (us *UserService) UserList(ctx context.Context, req *v1.UserListReq) (*v1.UserListRsp, error) {
-	list, err := us.uc.UserList(ctx, &biz.UserFriend{Uid: req.Uid, FriendStatus: &req.FriendStatus})
-	if err != nil {
-		return nil, err
-	}
-	var rsp v1.UserListRsp
-	rsp.Total = int32(len(list))
-	for _, v := range list {
-		rsp.List = append(rsp.List, &v1.UserListRsp_List{
-			UserId:       v.Id,
-			Nickname:     v.Nickname,
-			Sex:          v.Sex,
-			AvatarUrl:    pkg.CreateStringValuePtr(v.AvatarUrl),
-			Introduce:    pkg.CreateStringValuePtr(v.Introduce),
-			FriendRemake: pkg.CreateStringValuePtr(v.FriendRemark),
-		})
-	}
-	return &rsp, nil
+	}, nil
 }

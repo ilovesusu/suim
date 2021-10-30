@@ -11,10 +11,11 @@ suim 是一个即时通讯服务器，代码全部使用golang完成,采用 Krat
 5.支持服务水平扩展
 
 ### 使用技术:
-- 数据库:MySQL+Redis  
-- 消息队列:Nats  
-- 通讯框架:GRPC  
-- 项目框架:Kratos  
+
+- 数据库:MySQL+Redis
+- 消息队列:Nats
+- 通讯框架:GRPC
+- 项目框架:Kratos
 - 长连接通讯协议:Protocol Buffers
 - ORM框架:GORM
 

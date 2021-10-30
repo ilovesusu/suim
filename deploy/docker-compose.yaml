@@ -5,6 +5,19 @@
 
 version: '3.9'
 services:
+  # user:
+  #   restart: always
+  #   image: xiejinwu/suim-user-service:v0.1.0
+  #   container_name: user
+  #   ports:
+  #     - "8000:8000"
+  #     - "9000:9000"
+  #   volumes:
+  #     - ../app/user/service/configs:/data/conf
+  #   networks:
+  #     su-im:
+  #       ipv4_address: 172.19.0.21
+
   mariadb:
     restart: always
     image: mariadb:latest
@@ -18,7 +31,8 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: mysql
     networks:
-      - su-im
+      su-im:
+        ipv4_address: 172.19.0.11
 
   redis:
     restart: always
@@ -31,7 +45,8 @@ services:
       - ./redis/conf/redis.conf:/etc/redis/redis.conf
       - ./redis/data:/data
     networks:
-      - su-im
+      su-im:
+        ipv4_address: 172.19.0.12
 
   etcd:
     image: quay.io/coreos/etcd:v3.5.0
@@ -43,7 +58,8 @@ services:
       - ./etcd/data:/data
     command: etcd -name etcd -data-dir /data -advertise-client-urls http://0.0.0.0:2379 -listen-client-urls http://0.0.0.0:2379 -listen-peer-urls http://0.0.0.0:2380
     networks:
-      - su-im
+      su-im:
+        ipv4_address: 172.19.0.13
 
 #  nats:
 #    image: nats:latest

@@ -9,11 +9,11 @@ import (
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/google/wire"
-	"github.com/ilovesusu/suim/app/user/service/internal/biz"
-	"github.com/ilovesusu/suim/app/user/service/internal/conf"
-	"github.com/ilovesusu/suim/app/user/service/internal/data"
-	"github.com/ilovesusu/suim/app/user/service/internal/server"
-	"github.com/ilovesusu/suim/app/user/service/internal/service"
+	"github.com/ilovesusu/suim/app/logic/service/internal/biz"
+	"github.com/ilovesusu/suim/app/logic/service/internal/conf"
+	"github.com/ilovesusu/suim/app/logic/service/internal/data"
+	"github.com/ilovesusu/suim/app/logic/service/internal/server"
+	"github.com/ilovesusu/suim/app/logic/service/internal/service"
 )
 
 // initApp init kratos application.

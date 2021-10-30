@@ -11,15 +11,14 @@ import (
 	"github.com/go-kratos/kratos/v2/config/file"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
-	"github.com/go-kratos/kratos/v2/transport/http"
 )
 
 // go build -ldflags "-X main.Version=x.y.z"
 var (
 	// Name is the name of the compiled software.
-	Name string
+	Name = "Logic"
 	// Version is the version of the compiled software.
-	Version string
+	Version = "1.0"
 	// flagconf is the config flag.
 	flagconf string
 
@@ -30,15 +29,14 @@ func init() {
 	flag.StringVar(&flagconf, "conf", "../../configs", "config path, eg: -conf config.yaml")
 }
 
-func newApp(logger log.Logger, hs *http.Server, gs *grpc.Server, reg registry.Registrar) *kratos.App {
+func newApp(logger log.Logger, gs *grpc.Server, reg registry.Registrar) *kratos.App {
 	return kratos.New(
 		kratos.ID(id),
 		kratos.Name(Name),
-		kratos.Version(Version),
+		//kratos.Version(Version),
 		kratos.Metadata(map[string]string{}),
 		kratos.Logger(logger),
 		kratos.Server(
-			hs,
 			gs,
 		),
 		kratos.Registrar(reg),
@@ -53,8 +51,8 @@ func main() {
 		"service.id", id,
 		"service.name", Name,
 		"service.version", Version,
-		"trace_id", log.TraceID(),
-		"span_id", log.SpanID(),
+		//"trace_id", log.TraceID(),
+		//"span_id", log.SpanID(),
 	)
 	c := config.New(
 		config.WithSource(

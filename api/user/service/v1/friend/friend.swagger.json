@@ -1,0 +1,93 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "v1/friend/friend.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "Friend"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {},
+  "definitions": {
+    "ListUserFriendRsp": {
+      "type": "object",
+      "properties": {
+        "list": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ListUserFriendRspList"
+          }
+        }
+      },
+      "title": "列表响应参数"
+    },
+    "ListUserFriendRspList": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "int64"
+        },
+        "nickname": {
+          "type": "string"
+        },
+        "sex": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "avatarUrl": {
+          "type": "string"
+        },
+        "personalSign": {
+          "type": "string"
+        },
+        "remark": {
+          "type": "string"
+        }
+      }
+    },
+    "UpdateFriendRemarkRsp": {
+      "type": "object",
+      "title": "修改好友备注响应参数"
+    },
+    "UpdateFriendStatusRsp": {
+      "type": "object",
+      "title": "修改好友状态响应参数"
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    }
+  }
+}

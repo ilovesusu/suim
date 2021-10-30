@@ -5,13 +5,19 @@ server:
   grpc:
     addr: 0.0.0.0:9000
     timeout: 1s
+  etcd:
+    # addr: 172.21.0.13:2379
+    addr: 127.0.0.1:2379
+    timeout: 3
 data:
   database:
     driver: mysql
-    source: root:root@tcp(127.0.0.1:3306)/test
+    # source: root:mysql@tcp(172.21.0.12:3306)/suim
+    source: root:mysql@tcp(127.0.0.1:3306)/suim
+    debug: true
   redis:
+    # addr: 172.21.0.12:6379
     addr: 127.0.0.1:6379
+    pwd: "123456"
     read_timeout: 0.2s
     write_timeout: 0.2s
-etcd:
-  addr: 0.0.0.0:8000

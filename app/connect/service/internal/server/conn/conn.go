@@ -2,6 +2,10 @@ package conn
 
 import (
 	"container/list"
+	"context"
+	"fmt"
+	logic "github.com/ilovesusu/suim/api/logic/service/v1"
+	"github.com/ilovesusu/suim/app/connect/service/internal/service"
 	"sync"
 	"time"
 
@@ -25,6 +29,7 @@ type Conn struct {
 	DeviceId int64           // 设备ID
 	RoomId   int64           // 订阅的房间ID
 	Element  *list.Element   // 链表节点
+	S        *service.ShopAdmin
 }
 
 // Write 写入数据
@@ -34,7 +39,7 @@ func (c *Conn) Write(bytes []byte) error {
 	} else if c.CoonType == ConnTypeWS {
 		return c.WriteToWS(bytes)
 	}
-	//logger.Logger.Error("unknown conn type", zap.Any("conn", c))
+	//logger.Logger.Error("unknown connect type", zap.Any("connect", c))
 	return nil
 }
 
@@ -90,13 +95,23 @@ func (c *Conn) GetAddr() string {
 
 // HandleMessage todo 消息处理
 func (c *Conn) HandleMessage(bytes []byte) {
+	fmt.Println(string(bytes))
 	c.Write([]byte("woaini"))
-	//var input = new(pb.Input)
+	var input = new(logic.Input)
 	//err := proto.Unmarshal(bytes, input)
 	//if err != nil {
-	//	logger.Logger.Error("unmarshal error", zap.Error(err))
+	//	//logger.Logger.Error("unmarshal error", zap.Error(err))
 	//	return
 	//}
+
+	fmt.Println(input)
+	output, err := c.S.GetUser(context.Background(), input)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Println(output)
+	return
 	//logger.Logger.Debug("HandleMessage", zap.Any("input", input))
 	//
 	//// 对未登录的用户进行拦截
@@ -105,20 +120,31 @@ func (c *Conn) HandleMessage(bytes []byte) {
 	//	return
 	//}
 	//
-	//switch input.Type {
-	//case pb.PackageType_PT_SIGN_IN:
-	//	c.SignIn(input)
-	//case pb.PackageType_PT_SYNC:
-	//	c.Sync(input)
-	//case pb.PackageType_PT_HEARTBEAT:
-	//	c.Heartbeat(input)
-	//case pb.PackageType_PT_MESSAGE:
-	//	c.MessageACK(input)
-	//case pb.PackageType_PT_SUBSCRIBE_ROOM:
-	//	c.SubscribedRoom(input)
-	//default:
-	//	logger.Logger.Error("handler switch other")
-	//}
+
+	switch input.Type {
+	case logic.PackageType_PT_SIGN_IN:
+		//c.SignIn(input)
+	case logic.PackageType_PT_HEARTBEAT:
+		//c.Sync(input)
+	case logic.PackageType_PT_MESSAGE:
+		//c.Heartbeat(input)
+	case logic.PackageType_PT_GROUP:
+		//c.MessageACK(input)
+	case logic.PackageType_PT_FRIEND:
+		// todo c.FRIEND(input)
+	case logic.PackageType_PT_ROOM:
+		//c.SubscribedRoom(input)
+	case logic.PackageType_PT_CHANNEL:
+		//c.SubscribedRoom(input)
+	case logic.PackageType_PT_MINE:
+		//c.SubscribedRoom(input)
+	case logic.PackageType_PT_SEARCH:
+		//c.SubscribedRoom(input)
+	case logic.PackageType_PT_NOTIFY:
+		//c.SubscribedRoom(input)
+	default:
+		//logger.Logger.Error("handler switch other")
+	}
 }
 
 // Send todo 下发消息
