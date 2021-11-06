@@ -1,5 +1,14 @@
 package biz
 
+// CreateUserReq 创建用户请求参数
+type CreateUserReq struct {
+	Phone     string //手机号
+	Password  string //密码
+	Nickname  string //昵称
+	Sex       int32  //性别
+	AvatarUrl string //头像地址
+}
+
 // UpdateIdCardReq 修改身份信息请求参数
 type UpdateIdCardReq struct {
 	Id     int64  //用户id
@@ -65,10 +74,10 @@ type UpdateSnapCallReq struct {
 
 // UpdateFriendPassReq 修改用户添加好友方式
 type UpdateFriendPassReq struct {
-	Id                int64   //用户id
-	FriendPassType    int32   //添加好友方式(1-直接通过,2-需要验证,3-回答问题通过验证,4-拒绝加好友)
-	FriendPassProblem *string //问题通过好友请求问题
-	FriendPassAnswer  *string //问题通过好友答案
+	Id                int64  //用户id
+	FriendPassType    int32  //添加好友方式(1-直接通过,2-需要验证,3-回答问题通过验证,4-拒绝加好友)
+	FriendPassProblem string //问题通过好友请求问题
+	FriendPassAnswer  string //问题通过好友答案
 }
 
 // DeleteUserReq 删除用户帐号
@@ -79,24 +88,24 @@ type DeleteUserReq struct {
 
 // InfoUserBaseRsp 查询用户基本信息响应参数
 type InfoUserBaseRsp struct {
-	Number       string  //用户号码
-	Nickname     string  //昵称
-	Sex          int32   //性别
-	AvatarUrl    *string //头像
-	PersonalSign *string //个性签名
-	Introduce    *string //个人介绍
+	Number       string //用户号码
+	Nickname     string //昵称
+	Sex          int32  //性别
+	AvatarUrl    string //头像
+	PersonalSign string //个性签名
+	Introduce    string //个人介绍
 }
 
 // InfoAccountRsp 查询用户身份信息响应参数
 type InfoAccountRsp struct {
-	Phone  string  //手机号
-	Name   *string //姓名
-	IdCard *string //身份证号码
+	Phone  string //手机号
+	Name   string //姓名
+	IdCard string //身份证号码
 }
 
 // InfoFriendPassRsp 查询用户添加好友方式响应参数
 type InfoFriendPassRsp struct {
-	FriendPassType    int32   //添加好友方式(1-直接通过,2-需要验证,3-回答问题通过验证,4-拒绝加好友)
-	FriendPassProblem *string //问题通过好友请求问题
-	FriendPassAnswer  *string //问题通过好友答案
+	FriendPassType    int32  //添加好友方式(1-直接通过,2-需要验证,3-回答问题通过验证,4-拒绝加好友)
+	FriendPassProblem string //问题通过好友请求问题
+	FriendPassAnswer  string //问题通过好友答案
 }

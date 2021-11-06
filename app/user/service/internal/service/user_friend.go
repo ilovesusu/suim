@@ -4,16 +4,26 @@ import (
 	"context"
 	"github.com/ilovesusu/suim/api/user/service/v1/friend"
 	"github.com/ilovesusu/suim/app/user/service/internal/biz"
-	"github.com/ilovesusu/suim/pkg"
 )
+
+// CreateFriend 创建好友
+func (f *FriendService) CreateFriend(ctx context.Context, req *friend.CreateFriendReq) (*friend.CreateFriendRsp, error) {
+	if err := f.uc.CreateFriend(ctx, &biz.CreateFriendReq{
+		UserId:        req.UserId,
+		FriendId:      req.FriendId,
+		VerifyMessage: req.VerifyMessage,
+	}); err != nil {
+		return nil, err
+	}
+	return nil, nil
+}
 
 // UpdateFriendStatus 修改好友状态
 func (f *FriendService) UpdateFriendStatus(ctx context.Context, req *friend.UpdateFriendStatusReq) (*friend.UpdateFriendStatusRsp, error) {
 	if err := f.uc.UpdateFriendStatus(ctx, &biz.UpdateFriendStatusReq{
-		UserId:        req.UserId,
-		FriendId:      req.FriendId,
-		FriendStatus:  req.FriendStatus,
-		VerifyMessage: pkg.GetFromStringValue(req.VerifyMessage),
+		UserId:       req.UserId,
+		FriendId:     req.FriendId,
+		FriendStatus: req.FriendStatus,
 	}); err != nil {
 		return nil, err
 	}
@@ -48,9 +58,9 @@ func (f *FriendService) ListUserFriend(ctx context.Context, req *friend.ListUser
 			Id:           v.Id,
 			Nickname:     v.Nickname,
 			Sex:          v.Sex,
-			AvatarUrl:    pkg.CreateStringValuePtr(v.AvatarUrl),
-			PersonalSign: pkg.CreateStringValuePtr(v.PersonalSign),
-			Remark:       pkg.CreateStringValuePtr(v.Remark),
+			AvatarUrl:    v.AvatarUrl,
+			PersonalSign: v.PersonalSign,
+			Remark:       v.FriendRemark,
 		})
 	}
 	rsp.List = rspList

@@ -18,8 +18,6 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type UserClient interface {
-	//hello
-	Hello(ctx context.Context, in *HelloReq, opts ...grpc.CallOption) (*HelloRsp, error)
 	//创建用户
 	CreateUser(ctx context.Context, in *CreateUserReq, opts ...grpc.CallOption) (*CreateUserRsp, error)
 	//修改身份信息
@@ -62,15 +60,6 @@ type userClient struct {
 
 func NewUserClient(cc grpc.ClientConnInterface) UserClient {
 	return &userClient{cc}
-}
-
-func (c *userClient) Hello(ctx context.Context, in *HelloReq, opts ...grpc.CallOption) (*HelloRsp, error) {
-	out := new(HelloRsp)
-	err := c.cc.Invoke(ctx, "/User/Hello", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
 }
 
 func (c *userClient) CreateUser(ctx context.Context, in *CreateUserReq, opts ...grpc.CallOption) (*CreateUserRsp, error) {
@@ -230,8 +219,6 @@ func (c *userClient) InfoFriendPass(ctx context.Context, in *InfoFriendPassReq, 
 // All implementations must embed UnimplementedUserServer
 // for forward compatibility
 type UserServer interface {
-	//hello
-	Hello(context.Context, *HelloReq) (*HelloRsp, error)
 	//创建用户
 	CreateUser(context.Context, *CreateUserReq) (*CreateUserRsp, error)
 	//修改身份信息
@@ -273,9 +260,6 @@ type UserServer interface {
 type UnimplementedUserServer struct {
 }
 
-func (UnimplementedUserServer) Hello(context.Context, *HelloReq) (*HelloRsp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Hello not implemented")
-}
 func (UnimplementedUserServer) CreateUser(context.Context, *CreateUserReq) (*CreateUserRsp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateUser not implemented")
 }
@@ -338,24 +322,6 @@ type UnsafeUserServer interface {
 
 func RegisterUserServer(s grpc.ServiceRegistrar, srv UserServer) {
 	s.RegisterService(&User_ServiceDesc, srv)
-}
-
-func _User_Hello_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(HelloReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(UserServer).Hello(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/User/Hello",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServer).Hello(ctx, req.(*HelloReq))
-	}
-	return interceptor(ctx, in, info, handler)
 }
 
 func _User_CreateUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -671,10 +637,6 @@ var User_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "User",
 	HandlerType: (*UserServer)(nil),
 	Methods: []grpc.MethodDesc{
-		{
-			MethodName: "Hello",
-			Handler:    _User_Hello_Handler,
-		},
 		{
 			MethodName: "CreateUser",
 			Handler:    _User_CreateUser_Handler,

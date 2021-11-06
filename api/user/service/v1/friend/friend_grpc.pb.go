@@ -18,6 +18,8 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type FriendClient interface {
+	// 添加好友
+	CreateFriend(ctx context.Context, in *CreateFriendReq, opts ...grpc.CallOption) (*CreateFriendRsp, error)
 	//修改好友状态
 	UpdateFriendStatus(ctx context.Context, in *UpdateFriendStatusReq, opts ...grpc.CallOption) (*UpdateFriendStatusRsp, error)
 	//修改好友备注
@@ -32,6 +34,15 @@ type friendClient struct {
 
 func NewFriendClient(cc grpc.ClientConnInterface) FriendClient {
 	return &friendClient{cc}
+}
+
+func (c *friendClient) CreateFriend(ctx context.Context, in *CreateFriendReq, opts ...grpc.CallOption) (*CreateFriendRsp, error) {
+	out := new(CreateFriendRsp)
+	err := c.cc.Invoke(ctx, "/Friend/CreateFriend", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *friendClient) UpdateFriendStatus(ctx context.Context, in *UpdateFriendStatusReq, opts ...grpc.CallOption) (*UpdateFriendStatusRsp, error) {
@@ -65,6 +76,8 @@ func (c *friendClient) ListUserFriend(ctx context.Context, in *ListUserFriendReq
 // All implementations must embed UnimplementedFriendServer
 // for forward compatibility
 type FriendServer interface {
+	// 添加好友
+	CreateFriend(context.Context, *CreateFriendReq) (*CreateFriendRsp, error)
 	//修改好友状态
 	UpdateFriendStatus(context.Context, *UpdateFriendStatusReq) (*UpdateFriendStatusRsp, error)
 	//修改好友备注
@@ -78,6 +91,9 @@ type FriendServer interface {
 type UnimplementedFriendServer struct {
 }
 
+func (UnimplementedFriendServer) CreateFriend(context.Context, *CreateFriendReq) (*CreateFriendRsp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateFriend not implemented")
+}
 func (UnimplementedFriendServer) UpdateFriendStatus(context.Context, *UpdateFriendStatusReq) (*UpdateFriendStatusRsp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateFriendStatus not implemented")
 }
@@ -98,6 +114,24 @@ type UnsafeFriendServer interface {
 
 func RegisterFriendServer(s grpc.ServiceRegistrar, srv FriendServer) {
 	s.RegisterService(&Friend_ServiceDesc, srv)
+}
+
+func _Friend_CreateFriend_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateFriendReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FriendServer).CreateFriend(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/Friend/CreateFriend",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FriendServer).CreateFriend(ctx, req.(*CreateFriendReq))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _Friend_UpdateFriendStatus_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -161,6 +195,10 @@ var Friend_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "Friend",
 	HandlerType: (*FriendServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "CreateFriend",
+			Handler:    _Friend_CreateFriend_Handler,
+		},
 		{
 			MethodName: "UpdateFriendStatus",
 			Handler:    _Friend_UpdateFriendStatus_Handler,

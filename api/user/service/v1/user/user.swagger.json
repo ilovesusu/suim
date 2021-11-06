@@ -15,39 +15,7 @@
   "produces": [
     "application/json"
   ],
-  "paths": {
-    "/user/{name}": {
-      "get": {
-        "summary": "hello",
-        "operationId": "User_Hello",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/HelloRsp"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "name",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "User"
-        ]
-      }
-    }
-  },
+  "paths": {},
   "definitions": {
     "CreateUserRsp": {
       "type": "object",
@@ -60,15 +28,6 @@
     "ForgetPasswordRsp": {
       "type": "object",
       "title": "忘记密码响应参数"
-    },
-    "HelloRsp": {
-      "type": "object",
-      "properties": {
-        "hello": {
-          "type": "string"
-        }
-      },
-      "title": "hello响应参数"
     },
     "InfoAccountRsp": {
       "type": "object",

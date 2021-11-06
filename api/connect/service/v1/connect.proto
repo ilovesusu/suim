@@ -1,12 +1,16 @@
 syntax = "proto3";
 
-import "api/logic/service/v1/message.proto";
+package connect;
+
+import  "api/logic/service/v1/message.proto";
+
 
 option go_package = "suim/api/connect/service/v1;v1";
 
+
 service Conn {
     //  消息投递
-    rpc DeliverMessage (DeliverMessageReq) returns (Empty);
+    rpc DeliverMessage(DeliverMessageReq) returns (Empty);
 }
 
 message DeliverMessageReq {

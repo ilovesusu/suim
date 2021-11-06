@@ -4,30 +4,16 @@ import (
 	"context"
 	"github.com/ilovesusu/suim/api/user/service/v1/user"
 	"github.com/ilovesusu/suim/app/user/service/internal/biz"
-	"github.com/ilovesusu/suim/pkg"
 )
-
-// Hello hello测试
-func (us *UserService) Hello(ctx context.Context, req *user.HelloReq) (*user.HelloRsp, error) {
-	return &user.HelloRsp{Hello: "你好!" + req.Name}, nil
-}
 
 // CreateUser 创建用户
 func (us *UserService) CreateUser(ctx context.Context, req *user.CreateUserReq) (*user.CreateUserRsp, error) {
-	info := &biz.UserInfo{
-		Phone:             req.Phone,
-		Password:          req.Password,
-		Name:              pkg.GetFromStringValue(req.Name),
-		IdCard:            pkg.GetFromStringValue(req.IdCard),
-		Nickname:          req.Nickname,
-		Sex:               req.Sex,
-		AvatarUrl:         pkg.GetFromStringValue(req.AvatarUrl),
-		PersonalSign:      pkg.GetFromStringValue(req.PersonalSign),
-		Introduce:         pkg.GetFromStringValue(req.Introduce),
-		SnapCall:          req.SnapCall,
-		FriendPassType:    req.AddFriendType,
-		FriendPassProblem: pkg.GetFromStringValue(req.FriendPassProblem),
-		FriendPassAnswer:  pkg.GetFromStringValue(req.FriendPassAnswer),
+	info := &biz.CreateUserReq{
+		Phone:     req.Phone,
+		Password:  req.Password,
+		Nickname:  req.Nickname,
+		Sex:       req.Sex,
+		AvatarUrl: req.AvatarUrl,
 	}
 	if err := us.uc.CreateUser(ctx, info); err != nil {
 		return nil, err
@@ -153,8 +139,8 @@ func (us *UserService) UpdateFriendPass(ctx context.Context, req *user.UpdateFri
 	if err := us.uc.UpdateFriendPass(ctx, &biz.UpdateFriendPassReq{
 		Id:                req.Id,
 		FriendPassType:    req.AddFriendType,
-		FriendPassProblem: pkg.GetFromStringValue(req.FriendPassProblem),
-		FriendPassAnswer:  pkg.GetFromStringValue(req.FriendPassAnswer),
+		FriendPassProblem: req.FriendPassProblem,
+		FriendPassAnswer:  req.FriendPassAnswer,
 	}); err != nil {
 		return nil, err
 	}
@@ -182,9 +168,9 @@ func (us *UserService) InfoUserBase(ctx context.Context, req *user.InfoUserBaseR
 		Number:       info.Number,
 		Nickname:     info.Nickname,
 		Sex:          info.Sex,
-		AvatarUrl:    pkg.CreateStringValuePtr(info.AvatarUrl),
-		PersonalSign: pkg.CreateStringValuePtr(info.PersonalSign),
-		Introduce:    pkg.CreateStringValuePtr(info.Introduce),
+		AvatarUrl:    info.AvatarUrl,
+		PersonalSign: info.PersonalSign,
+		Introduce:    info.Introduce,
 	}, nil
 }
 
@@ -196,8 +182,8 @@ func (us *UserService) InfoAccount(ctx context.Context, req *user.InfoAccountReq
 	}
 	return &user.InfoAccountRsp{
 		Phone:  info.Phone,
-		Name:   pkg.CreateStringValuePtr(info.Name),
-		IdCard: pkg.CreateStringValuePtr(info.IdCard),
+		Name:   info.Name,
+		IdCard: info.IdCard,
 	}, nil
 }
 
@@ -218,7 +204,7 @@ func (us *UserService) InfoFriendPass(ctx context.Context, req *user.InfoFriendP
 	}
 	return &user.InfoFriendPassRsp{
 		FriendPassType:    info.FriendPassType,
-		FriendPassProblem: pkg.CreateStringValuePtr(info.FriendPassProblem),
-		FriendPassAnswer:  pkg.CreateStringValuePtr(info.FriendPassAnswer),
+		FriendPassProblem: info.FriendPassProblem,
+		FriendPassAnswer:  info.FriendPassAnswer,
 	}, nil
 }

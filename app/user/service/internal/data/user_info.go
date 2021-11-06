@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-// UserRepo 好友回购结构体
+// UserRepo .
 type UserRepo struct {
 	data *Data
 	log  *log.Helper
@@ -27,12 +27,12 @@ func (uc *UserRepo) CreateUser(_ context.Context, user *biz.UserInfo) error {
 	for {
 		number, err = pkg.RandNumber(uc.log)
 		if err != nil {
-			return v1.ErrorFAIL("创建失败")
+			return v1.ErrorErrorFail("创建失败")
 		}
 		var con int64
 		if err = db.Select("number").Where("number = ? and delete_time is null", number).Count(&con).Error; err != nil {
 			uc.log.Log(log.LevelError, "查询用户号码失败", err)
-			return v1.ErrorFAIL("创建失败")
+			return v1.ErrorErrorFail("创建失败")
 		}
 		if con == 0 {
 			break
@@ -43,15 +43,16 @@ func (uc *UserRepo) CreateUser(_ context.Context, user *biz.UserInfo) error {
 	var con int64
 	if err = db.Select("phone").Where("delete_time is null").Count(&con).Error; err != nil {
 		uc.log.Log(log.LevelError, "查询手机号失败", err)
-		return v1.ErrorFAIL("创建用户失败")
+		return v1.ErrorErrorFail("创建用户失败")
 	}
 	if con > 0 {
-		return v1.ErrorPhoneIsUsed("手机号已被使用")
+		return v1.ErrorErrorPhoneIsUsed("手机号已被使用")
 	}
+	user.CreateTime = time.Now()
 	//创建用户
 	if err = db.Create(user).Error; err != nil {
 		uc.log.Log(log.LevelError, "创建用户失败", err)
-		return v1.ErrorFAIL("创建用户失败")
+		return v1.ErrorErrorFail("创建用户失败")
 	}
 	return nil
 }
@@ -62,10 +63,10 @@ func (uc *UserRepo) UpdateIdCard(_ context.Context, req *biz.UpdateIdCardReq) er
 		db  = uc.data.db.Model(&biz.UserInfo{})
 		err error
 	)
-	if err = db.Where("id = ?", req.Id).Updates(map[string]interface{}{"name": req.Name, "id_card": req.IdCard}).
+	if err = db.Where("id = ?", req.Id).Updates(map[string]interface{}{"name": req.Name, "id_card": req.IdCard, "update_time": time.Now()}).
 		Error; err != nil {
 		uc.log.Log(log.LevelError, "修改用户身份信息失败", err)
-		return v1.ErrorFAIL("修改失败")
+		return v1.ErrorErrorFail("修改失败")
 	}
 	return nil
 }
@@ -79,14 +80,14 @@ func (uc *UserRepo) UpdatePhone(_ context.Context, req *biz.UpdatePhoneReq) erro
 	)
 	if err = db.Select("phone").Where("delete_time is null").Count(&con).Error; err != nil {
 		uc.log.Log(log.LevelError, "查询电话号码失败", err)
-		return v1.ErrorFAIL("修改失败")
+		return v1.ErrorErrorFail("修改失败")
 	}
 	if con > 0 {
-		return v1.ErrorPhoneIsUsed("手机号码已被使用")
+		return v1.ErrorErrorPhoneIsUsed("手机号码已被使用")
 	}
-	if err = db.Where("id = ?", req.Id).Updates(map[string]interface{}{"phone": req.Phone}).Error; err != nil {
+	if err = db.Where("id = ?", req.Id).Updates(map[string]interface{}{"phone": req.Phone, "update_time": time.Now()}).Error; err != nil {
 		uc.log.Log(log.LevelError, "修改用户电话号码失败", err)
-		return v1.ErrorFAIL("修改失败")
+		return v1.ErrorErrorFail("修改失败")
 	}
 	return nil
 }
@@ -100,14 +101,14 @@ func (uc *UserRepo) UpdatePassword(_ context.Context, req *biz.UpdatePasswordReq
 	)
 	if err = db.Select("password").Where("id = ?", req.Id).First(&password).Error; err != nil {
 		uc.log.Log(log.LevelError, "查询用户密码失败", err)
-		return v1.ErrorFAIL("修改失败")
+		return v1.ErrorErrorFail("修改失败")
 	}
 	if password != req.OldPassword {
-		return v1.ErrorFAIL("密码不正确")
+		return v1.ErrorErrorFail("密码不正确")
 	}
-	if err = db.Where("id = ?", req.Id).Updates(map[string]interface{}{"password": req.NewPassword}).Error; err != nil {
+	if err = db.Where("id = ?", req.Id).Updates(map[string]interface{}{"password": req.NewPassword, "update_time": time.Now()}).Error; err != nil {
 		uc.log.Log(log.LevelError, "修改用户密码失败", err)
-		return v1.ErrorFAIL("修改失败")
+		return v1.ErrorErrorFail("修改失败")
 	}
 	return nil
 }
@@ -118,9 +119,10 @@ func (uc *UserRepo) ForgetPassword(_ context.Context, req *biz.ForgetPasswordReq
 		db  = uc.data.db.Model(&biz.UserInfo{})
 		err error
 	)
-	if err = db.Where("phone = ? and delete_time is null", req.Phone).Updates(map[string]interface{}{"password": req.Password}).Error; err != nil {
+	if err = db.Where("phone = ? and delete_time is null", req.Phone).Updates(map[string]interface{}{"password": req.Password, "update_time": time.Now()}).
+		Error; err != nil {
 		uc.log.Log(log.LevelError, "忘记密码重置失败", err)
-		return v1.ErrorFAIL("修改失败")
+		return v1.ErrorErrorFail("修改失败")
 	}
 	return nil
 }
@@ -131,9 +133,9 @@ func (uc *UserRepo) UpdateNickname(_ context.Context, req *biz.UpdateNicknameReq
 		db  = uc.data.db.Model(&biz.UserInfo{})
 		err error
 	)
-	if err = db.Where("id = ?", req.Id).Updates(map[string]interface{}{"nickname": req.Nickname}).Error; err != nil {
+	if err = db.Where("id = ?", req.Id).Updates(map[string]interface{}{"nickname": req.Nickname, "update_time": time.Now()}).Error; err != nil {
 		uc.log.Log(log.LevelError, "修改用户昵称失败", err)
-		return v1.ErrorFAIL("修改失败")
+		return v1.ErrorErrorFail("修改失败")
 	}
 	return nil
 }
@@ -144,9 +146,9 @@ func (uc *UserRepo) UpdateSex(_ context.Context, req *biz.UpdateSexReq) error {
 		db  = uc.data.db.Model(&biz.UserInfo{})
 		err error
 	)
-	if err = db.Where("id = ?", req.Id).Updates(map[string]interface{}{"sex": req.Sex}).Error; err != nil {
+	if err = db.Where("id = ?", req.Id).Updates(map[string]interface{}{"sex": req.Sex, "update_time": time.Now()}).Error; err != nil {
 		uc.log.Log(log.LevelError, "修改用户性别失败", err)
-		return v1.ErrorFAIL("修改失败")
+		return v1.ErrorErrorFail("修改失败")
 	}
 	return nil
 }
@@ -157,9 +159,9 @@ func (uc *UserRepo) UpdateAvatarUrl(_ context.Context, req *biz.UpdateAvatarUrlR
 		db  = uc.data.db.Model(&biz.UserInfo{})
 		err error
 	)
-	if err = db.Where("id = ?", req.Id).Updates(map[string]interface{}{"avatar_url": req.AvatarUrl}).Error; err != nil {
+	if err = db.Where("id = ?", req.Id).Updates(map[string]interface{}{"avatar_url": req.AvatarUrl, "update_time": time.Now()}).Error; err != nil {
 		uc.log.Log(log.LevelError, "修改用户头像失败", err)
-		return v1.ErrorFAIL("修改失败")
+		return v1.ErrorErrorFail("修改失败")
 	}
 	return nil
 }
@@ -170,9 +172,9 @@ func (uc *UserRepo) UpdatePersonalSign(_ context.Context, req *biz.UpdatePersona
 		db  = uc.data.db.Model(&biz.UserInfo{})
 		err error
 	)
-	if err = db.Where("id = ?", req.Id).Updates(map[string]interface{}{"personal_sign": req.PersonalSign}).Error; err != nil {
+	if err = db.Where("id = ?", req.Id).Updates(map[string]interface{}{"personal_sign": req.PersonalSign, "update_time": time.Now()}).Error; err != nil {
 		uc.log.Log(log.LevelError, "修改用户个性签名失败", err)
-		return v1.ErrorFAIL("修改失败")
+		return v1.ErrorErrorFail("修改失败")
 	}
 	return nil
 }
@@ -183,9 +185,9 @@ func (uc *UserRepo) UpdateIntroduce(_ context.Context, req *biz.UpdateIntroduceR
 		db  = uc.data.db.Model(&biz.UserInfo{})
 		err error
 	)
-	if err = db.Where("id = ?", req.Id).Updates(map[string]interface{}{"introduce": req.Introduce}).Error; err != nil {
+	if err = db.Where("id = ?", req.Id).Updates(map[string]interface{}{"introduce": req.Introduce, "update_time": time.Now()}).Error; err != nil {
 		uc.log.Log(log.LevelError, "修改个人介绍失败", err)
-		return v1.ErrorFAIL("修改失败")
+		return v1.ErrorErrorFail("修改失败")
 	}
 	return nil
 }
@@ -196,9 +198,9 @@ func (uc *UserRepo) UpdateSnapCall(_ context.Context, req *biz.UpdateSnapCallReq
 		db  = uc.data.db.Model(&biz.UserInfo{})
 		err error
 	)
-	if err = db.Where("id = ?", req.Id).Updates(map[string]interface{}{"snap_call": req.SnapCall}).Error; err != nil {
+	if err = db.Where("id = ?", req.Id).Updates(map[string]interface{}{"snap_call": req.SnapCall, "update_time": time.Now()}).Error; err != nil {
 		uc.log.Log(log.LevelError, "修改用户是否允许临时会话失败", err)
-		return v1.ErrorFAIL("修改失败")
+		return v1.ErrorErrorFail("修改失败")
 	}
 	return nil
 }
@@ -210,9 +212,9 @@ func (uc *UserRepo) UpdateFriendPass(_ context.Context, req *biz.UpdateFriendPas
 		err error
 	)
 	if err = db.Where("id = ?", req.Id).Updates(map[string]interface{}{"friend_pass_type": req.FriendPassType,
-		"friend_pass_problem": req.FriendPassProblem, "friend_pass_answer": req.FriendPassAnswer}).Error; err != nil {
+		"friend_pass_problem": req.FriendPassProblem, "friend_pass_answer": req.FriendPassAnswer, "update_time": time.Now()}).Error; err != nil {
 		uc.log.Log(log.LevelError, "修改用户添加好友方式", err)
-		return v1.ErrorFAIL("修改失败")
+		return v1.ErrorErrorFail("修改失败")
 	}
 	return nil
 }
@@ -233,7 +235,7 @@ func (uc *UserRepo) InfoUserBase(_ context.Context, id int64) (*biz.InfoUserBase
 	if err = db.Select("number", "nickname", "sex", "avatar_url", "personal_sign", "introduce").Where("id = ?", id).
 		First(data).Error; err != nil {
 		uc.log.Log(log.LevelError, "查询用户基本信息失败", err)
-		return nil, v1.ErrorFAIL("查询失败")
+		return nil, v1.ErrorErrorFail("查询失败")
 	}
 	return data, nil
 }
@@ -247,7 +249,7 @@ func (uc *UserRepo) InfoAccount(_ context.Context, id int64) (*biz.InfoAccountRs
 	)
 	if err = db.Select("phone", "name", "id_card").Where("id = ?", id).First(data).Error; err != nil {
 		uc.log.Log(log.LevelError, "查询用户身份信息失败", err)
-		return nil, v1.ErrorFAIL("查询失败")
+		return nil, v1.ErrorErrorFail("查询失败")
 	}
 	return data, nil
 }
@@ -261,7 +263,7 @@ func (uc *UserRepo) InfoSnapCall(_ context.Context, id int64) (*bool, error) {
 	)
 	if err = db.Select("snap_call").Where("id = ?", id).First(data).Error; err != nil {
 		uc.log.Log(log.LevelError, "查询用户是否允许临时会话失败", err)
-		return nil, v1.ErrorFAIL("查询失败")
+		return nil, v1.ErrorErrorFail("查询失败")
 	}
 	return data, nil
 }
@@ -276,7 +278,7 @@ func (uc *UserRepo) InfoFriendPass(_ context.Context, id int64) (*biz.InfoFriend
 	if err = db.Select("friend_pass_type", "friend_pass_problem", "friend_pass_answer").Where("id = ?", id).
 		First(data).Error; err != nil {
 		uc.log.Log(log.LevelError, "查询用户添加好友方式失败", err)
-		return nil, v1.ErrorFAIL("查询失败")
+		return nil, v1.ErrorErrorFail("查询失败")
 	}
 	return data, nil
 }

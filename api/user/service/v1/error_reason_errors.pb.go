@@ -11,56 +11,38 @@ import (
 // is compatible with the kratos package it is being compiled against.
 const _ = errors.SupportPackageIsVersion1
 
-func IsUnknownError(err error) bool {
+func IsErrorUnknown(err error) bool {
 	e := errors.FromError(err)
-	return e.Reason == ErrorReason_UNKNOWN_ERROR.String() && e.Code == 500
+	return e.Reason == Error_ERROR_UNKNOWN.String() && e.Code == 500
 }
 
-func ErrorUnknownError(format string, args ...interface{}) *errors.Error {
-	return errors.New(500, ErrorReason_UNKNOWN_ERROR.String(), fmt.Sprintf(format, args...))
+func ErrorErrorUnknown(format string, args ...interface{}) *errors.Error {
+	return errors.New(500, Error_ERROR_UNKNOWN.String(), fmt.Sprintf(format, args...))
 }
 
-func IsSUCCESS(err error) bool {
+func IsErrorSuccess(err error) bool {
 	e := errors.FromError(err)
-	return e.Reason == ErrorReason_SUCCESS.String() && e.Code == 500
+	return e.Reason == Error_ERROR_SUCCESS.String() && e.Code == 500
 }
 
-func ErrorSUCCESS(format string, args ...interface{}) *errors.Error {
-	return errors.New(500, ErrorReason_SUCCESS.String(), fmt.Sprintf(format, args...))
+func ErrorErrorSuccess(format string, args ...interface{}) *errors.Error {
+	return errors.New(500, Error_ERROR_SUCCESS.String(), fmt.Sprintf(format, args...))
 }
 
-func IsFAIL(err error) bool {
+func IsErrorFail(err error) bool {
 	e := errors.FromError(err)
-	return e.Reason == ErrorReason_FAIL.String() && e.Code == 500
+	return e.Reason == Error_ERROR_FAIL.String() && e.Code == 500
 }
 
-func ErrorFAIL(format string, args ...interface{}) *errors.Error {
-	return errors.New(500, ErrorReason_FAIL.String(), fmt.Sprintf(format, args...))
+func ErrorErrorFail(format string, args ...interface{}) *errors.Error {
+	return errors.New(500, Error_ERROR_FAIL.String(), fmt.Sprintf(format, args...))
 }
 
-func IsPhoneIsUsed(err error) bool {
+func IsErrorPhoneIsUsed(err error) bool {
 	e := errors.FromError(err)
-	return e.Reason == ErrorReason_PHONE_IS_USED.String() && e.Code == 500
+	return e.Reason == Error_ERROR_PHONE_IS_USED.String() && e.Code == 500
 }
 
-func ErrorPhoneIsUsed(format string, args ...interface{}) *errors.Error {
-	return errors.New(500, ErrorReason_PHONE_IS_USED.String(), fmt.Sprintf(format, args...))
-}
-
-func IsQuestionsNotNull(err error) bool {
-	e := errors.FromError(err)
-	return e.Reason == ErrorReason_QUESTIONS_NOT_NULL.String() && e.Code == 500
-}
-
-func ErrorQuestionsNotNull(format string, args ...interface{}) *errors.Error {
-	return errors.New(500, ErrorReason_QUESTIONS_NOT_NULL.String(), fmt.Sprintf(format, args...))
-}
-
-func IsAnswersNotNull(err error) bool {
-	e := errors.FromError(err)
-	return e.Reason == ErrorReason_ANSWERS_NOT_NULL.String() && e.Code == 500
-}
-
-func ErrorAnswersNotNull(format string, args ...interface{}) *errors.Error {
-	return errors.New(500, ErrorReason_ANSWERS_NOT_NULL.String(), fmt.Sprintf(format, args...))
+func ErrorErrorPhoneIsUsed(format string, args ...interface{}) *errors.Error {
+	return errors.New(500, Error_ERROR_PHONE_IS_USED.String(), fmt.Sprintf(format, args...))
 }

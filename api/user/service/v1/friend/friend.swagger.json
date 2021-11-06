@@ -17,6 +17,10 @@
   ],
   "paths": {},
   "definitions": {
+    "CreateFriendRsp": {
+      "type": "object",
+      "title": "添加好友相应参数"
+    },
     "ListUserFriendRsp": {
       "type": "object",
       "properties": {
